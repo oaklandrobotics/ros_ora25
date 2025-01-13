@@ -74,7 +74,7 @@ class TestInterfaceTesterLink(unittest.TestCase):
         # Shutdown ROS context
         rclpy.shutdown()
     
-    def test_right_wheel_transmit(self, rightwheel, proc_output):
+    def test_wheel_transmit(self, wheel, proc_output):
         # List to store the messages
         msgs_received = []
 
@@ -103,7 +103,7 @@ class TestInterfaceTesterLink(unittest.TestCase):
             # Now we can see if those messages are actually correct
             for msg in msgs_received:
                 proc_output.assertWaitFor(
-                    expected_output = msg.data, process=interface
+                    expected_output = msg.data, process=interface_node
                 )
         
         finally:
