@@ -77,3 +77,38 @@ from odrive.enums import AxisState
 print(AxisState.CLOSED_LOOP_CONTROL) # 8
 print(AxisState(8).name) # CLOSED_LOOP_CONTROL
 ```
+
+# Testing
+
+To test the code, we must first set up a virtual can interface.
+
+First, load the vcan module:
+
+```bash
+modprobe vcan
+```
+
+Now create the virtual can interface - vcan0
+
+```bash
+sudo ip link add dev vcan0 type vcan
+sudo ip link set vcan0 mtu 16
+sudo ip link set up vcan0
+```
+
+Now, the virtual can interface should be accessible, you can check by running the following:
+
+```bash
+ifconfig vcan0
+```
+
+The expected output is:
+
+```bash
+vcan0     Link encap:UNSPEC  HWaddr 00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00
+          UP RUNNING NOARP  MTU:16  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
+```
