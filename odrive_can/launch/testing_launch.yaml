@@ -11,7 +11,7 @@ launch:
       value: 0
     -
       name: "interface"
-      value: "can0"
+      value: "vcan0"
 
 - node:
     pkg: "odrive_can"
@@ -24,4 +24,4 @@ launch:
       value: 1
     -
       name: "interface"
-      value: "can0"
+      value: "vcan0"
