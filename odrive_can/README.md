@@ -1,4 +1,65 @@
-# Standalone ODrive ROS2 node
+# Testing
+
+## Setting up Virtual CAN Interface
+
+First, load the vcan module (Linux):
+
+```bash
+modprobe vcan
+```
+
+Now create the virtual can (vcan) interface - vcan0
+
+```bash
+sudo ip link add dev vcan0 type vcan
+sudo ip link set vcan0 mtu 16
+sudo ip link set up vcan0
+```
+
+Now, the vcan0 interface should be accessible. This can be checked by running the following:
+
+```bash
+ifconfig vcan0
+```
+
+The expected output is:
+
+```bash
+vcan0     Link encap:UNSPEC  HWaddr 00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00
+          UP RUNNING NOARP  MTU:16  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
+```
+
+## Launching the Node
+
+After ensuring the CAN interface of choice is running, use the following command to set the source and launch the node:
+
+```bash
+# if the workspace is not yet built, use the 'colcon build' command to build it
+source ./install/setup.bash
+ros2 launch odrive_can <vcan/can>_launch.yaml
+```
+
+## [Inspection](https://docs.odriverobotics.com/v/latest/guides/ros-package.html#inspection)
+
+Inside of another terminal we can both send and see data to/from the `odrive_axis0` and `odrive_axis1` topics
+
+  To show data from the ODrive:
+
+  ```bash
+  ros2 topic echo /odrive_axis<0/1>/controller_status
+  ros2 topic echo /odrive_axis<0/1>/odrive_status
+  ```
+
+  To send setpoints:
+  ```bash
+  ros2 topic pub /odrive_axis<0/1>/control_message odrive_can/msg/ControlMessage "{control_mode: 2, input_mode: 1, input_pos: 0.0, input_vel: 1.0, input_torque: 0.0}"
+  ```
+
+# Standalone ODrive ROS2 node (ODrive Documentation)
 
 This packages serves as a standalone ROS2 node to control the ODrive via CAN.
 
@@ -76,39 +137,4 @@ If you have the `odrive` Python package installed (not mandatory for this ROS no
 from odrive.enums import AxisState
 print(AxisState.CLOSED_LOOP_CONTROL) # 8
 print(AxisState(8).name) # CLOSED_LOOP_CONTROL
-```
-
-# Testing
-
-To test the code, we must first set up a virtual can interface.
-
-First, load the vcan module:
-
-```bash
-modprobe vcan
-```
-
-Now create the virtual can interface - vcan0
-
-```bash
-sudo ip link add dev vcan0 type vcan
-sudo ip link set vcan0 mtu 16
-sudo ip link set up vcan0
-```
-
-Now, the virtual can interface should be accessible, you can check by running the following:
-
-```bash
-ifconfig vcan0
-```
-
-The expected output is:
-
-```bash
-vcan0     Link encap:UNSPEC  HWaddr 00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00
-          UP RUNNING NOARP  MTU:16  Metric:1
-          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
-          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
-          collisions:0 txqueuelen:1000
-          RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
 ```
