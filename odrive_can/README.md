@@ -1,7 +1,7 @@
 # Testing
 
-## Setting up Virtual CAN Interface
-
+## CAN Interface
+### Virtual CAN Interface
 First, load the vcan module (Linux):
 
 ```bash
@@ -31,6 +31,12 @@ vcan0     Link encap:UNSPEC  HWaddr 00-00-00-00-00-00-00-00-00-00-00-00-00-00-00
           TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
           collisions:0 txqueuelen:1000
           RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
+```
+
+### Vulcan Interface
+
+```
+sudo slcand -o -s6 -t hw -S 3000000 /dev/ttyACM0 can0
 ```
 
 ## Launching the Node
