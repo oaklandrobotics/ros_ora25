@@ -7,6 +7,10 @@ from std_msgs.msg import Bool, Float32
 # Published to control_message
 
 class interface_node(Node):
+    # Control Message
+    # "{control_mode: uint32, input_mode: uint32, input_pos: float32, input_vel: float32, input_torque: float32
+
+
     def __init__(self):
         super().__init__('ora_interface')
 
@@ -16,7 +20,7 @@ class interface_node(Node):
 
         #Publishers
         # self.control_message_left = self.create_publisher(Control_Message, 'odrive_axis0/can_node/')
-        # self.control_message_right = self.create_publisher(Control_Message, '/odrive_axis1/can_node/')
+        # self.control_message_right = self.create_publisher(Control_Message, 'odrive_axis1/can_node/')
         # What else do we need??
         
         #Timer

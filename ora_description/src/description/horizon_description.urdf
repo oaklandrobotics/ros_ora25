@@ -1,0 +1,168 @@
+<?xml version="1.0"?>
+
+<robot name="horizon" xmlns:xacro="http://ros.org/wiki/xacro">
+
+    <!-- Define constants based on horizon's real properties -->
+    <!-- These were taken from the ora-24 repository as the chassis did not change -->
+    <xacro:property name="main_chassis_length" value="${3 / 3.281}"/>
+    <xacro:property name="main_chassis_width" value="${2 / 3.281}"/>
+    <xacro:property name="main_chassis_height" value="${(16 / 12) / 3.281}"/> <!-- 16 in. -->
+
+    <xacro:property name="tower_length" value="${(37 / 12) / 3.281}"/> <!-- 3 ft + 1 in. for top bar-->
+
+    <xacro:property name="wheel_radius" value="${((14.5 / 12) / 2) / 3.281}"/> <!-- 14.5 in. diameter -->
+    <xacro:property name="wheel_width" value="${(3.35 / 12) / 3.281}"/>
+    <xacro:property name="wheel_x_offset" value="${0}"/>
+    <xacro:property name="wheel_chassis_gap" value="${(1 / 12) / 3.281}"/> <!-- 1 in. gap -->
+    <xacro:property name="wheel_z_offset" value="${-main_chassis_height / 2}"/>
+
+    <xacro:property name="front_caster_radius" value="${(2 / 12) / 3.281}"/><!-- 4 in. diameter -->
+    <xacro:property name="rear_caster_radius" value="${(1 / 12) / 3.281}"/><!-- 2 in. diameter -->
+    <xacro:property name="caster_length_offset" value="${(main_chassis_length/2)-((1/12)/3.281)}"/>
+    <xacro:property name="caster_z_offset" value="${-main_chassis_height / 2}"/>
+
+      <!-- Intertia property macros  -->
+    <xacro:macro name="chassis_inertia" params="m w h d">
+        <inertial>
+            <origin xyz="0 0 0" rpy="${pi/2} 0 ${pi/2}"/>
+            <mass value="${m}"/>
+            <inertia ixx="${(m/12) * (h*h + d*d)}" ixy="0.0" ixz="0.0" iyy="${(m/12) * (w*w + d*d)}" iyz="0.0" izz="${(m/12) * (w*w + h*h)}"/>
+        </inertial>
+    </xacro:macro>
+
+    <xacro:macro name="cylinder_inertia" params="m r h">
+        <inertial>
+            <origin xyz="0 0 0" rpy="${pi/2} 0 0" />
+            <mass value="${m}"/>
+            <inertia ixx="${(m/12) * (3*r*r + h*h)}" ixy = "0" ixz = "0" iyy="${(m/12) * (3*r*r + h*h)}" iyz = "0" izz="${(m/2) * (r*r)}"/>
+        </inertial>
+    </xacro:macro>
+
+    <xacro:macro name="sphere_inertia" params="m r">
+        <inertial>
+            <mass value="${m}"/>
+            <inertia ixx="${(2/5) * m * (r*r)}" ixy="0.0" ixz="0.0" iyy="${(2/5) * m * (r*r)}" iyz="0.0" izz="${(2/5) * m * (r*r)}"/>
+        </inertial>
+    </xacro:macro>
+
+    <!-- Base -->
+    <link name="base_link">
+        <!-- Visual Properties -->
+        <visual>
+            <geometry>
+                <box size="${main_chassis_length} ${main_chassis_width} ${main_chassis_height}"/>
+            </geometry>
+            <material name="gray">
+                <color rgba="0.46 0.48 0.49 1.0"/>
+            </material>
+        </visual>
+
+        <!-- Physical Properties -->
+        <collision>
+            <geometry>
+                <box size="${main_chassis_length} ${main_chassis_width} ${main_chassis_height}"/>
+            </geometry>
+        </collision>
+
+        <!-- yes, these are switched around on purpose -->
+        <xacro:chassis_inertia m="15" w="${main_chassis_length}" d="${main_chassis_width}" h="${main_chassis_height}"/>
+    </link>
+
+    <!-- Footprint -->
+    <!-- No inertial/collision values as this is a virtual (non-physical) link -->
+    <link name="base_footprint"/>
+
+    <!-- Connect "Footprint" and "Base" through a joint -->
+    <joint name="base_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="base_footprint"/>
+        <origin xyz="0.0 0.0 ${-wheel_radius}" rpy="0.0 0.0 0.0"/>
+    </joint>
+
+    <!-- Main Wheel Macro -->
+    <xacro:macro name="wheel" params="prefix x_reflect y_reflect">
+        <!-- Visual Properties -->
+        <link name="${prefix}_link">
+            <visual>
+                <origin xyz="0.0 0.0 0.0" rpy="${pi/2} 0.0 0.0"/>
+                <geometry>
+                    <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+                </geometry>
+                <material name="Dark Dark Gray">
+                    <color rgba="0.3 0.3 0.3 1.0"/>
+                </material>
+            </visual>
+        </link>
+
+        <!-- Joint Properties -->
+        <joint name="${prefix}_joint" type="continuous">
+            <parent link="base_link"/>
+            <child link="${prefix}_link"/>
+            <origin xyz="${x_reflect * wheel_x_offset} ${y_reflect * (main_chassis_width / 2 + wheel_chassis_gap)} ${wheel_z_offset}" rpy="0.0 0.0 0.0"/>
+            <axis xyz="0.0 1.0 0.0"/>
+        </joint>
+
+        <!-- Physical Properties -->
+        <collision>
+            <origin xyz="0.0 0.0 0.0" rpy="${pi/2} 0.0 0.0"/>
+            <geometry>
+                <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+            </geometry>
+        </collision>
+
+        <xacro:cylinder_inertia m="0.5" r="${wheel_radius}" h="${wheel_width}"/>
+    </xacro:macro>
+
+    <!-- Main Wheels -->
+    <xacro:wheel prefix="mainwheel_left" x_reflect="-1" y_reflect="1"/>
+    <xacro:wheel prefix="mainwheel_right" x_reflect="-1" y_reflect="-1"/>
+
+    <!-- Caster Wheels -->
+    <!-- Front -->
+    <link name="front_caster">
+        <visual>
+            <geometry>
+                <sphere radius="${front_caster_radius}"/>
+            </geometry>
+        </visual>
+
+        <collision>
+            <geometry>
+                <sphere radius="${front_caster_radius}"/>
+            </geometry>
+        </collision>
+
+        <xacro:sphere_inertia m="0.5" r="${front_caster_radius}"/>
+    </link>
+
+    <!-- Rear -->
+    <link name="rear_caster">
+        <visual>
+            <geometry>
+                <sphere radius="${rear_caster_radius}"/>
+            </geometry>
+        </visual>
+
+        <collision>
+            <geometry>
+                <sphere radius="${rear_caster_radius}"/>
+            </geometry>
+        </collision>
+
+        <xacro:sphere_inertia m="0.25" r="${rear_caster_radius}"/>
+    </link>
+
+    <!-- Caster Wheel Joints -->
+    <joint name="front_caster_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="front_caster"/>
+        <origin xyz="${(main_chassis_length / 2) - front_caster_radius} 0 ${-main_chassis_height / 2}" rpy="0 0 0"/>
+    </joint>
+
+    <joint name="rear_caster_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="rear_caster"/>
+        <origin xyz="${(-main_chassis_length / 2) + rear_caster_radius} 0 ${-main_chassis_height / 2}" rpy="0 0 0"/>
+    </joint>
+
+</robot>
