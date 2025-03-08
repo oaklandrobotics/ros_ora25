@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <robot name="horizon" xmlns:xacro="http://ros.org/wiki/xacro">
-
+    <!-- Base Robot Stuff-->
     <!-- Define constants based on horizon's real properties -->
     <!-- These were taken from the ora-24 repository as the chassis did not change -->
     <xacro:property name="main_chassis_length" value="${3 / 3.281}"/>
@@ -29,6 +29,20 @@
             <inertia ixx="${(m/12) * (h*h + d*d)}" ixy="0.0" ixz="0.0" iyy="${(m/12) * (w*w + d*d)}" iyz="0.0" izz="${(m/12) * (w*w + h*h)}"/>
         </inertial>
     </xacro:macro>
+
+    <xacro:macro name="box_inertia" params="m w d h">
+        <inertial>
+            <mass value="${m}"/>
+            <inertia 
+                ixx="${(m/12) * (h*h + d*d)}" 
+                ixy="0.0" 
+                ixz="0.0" 
+                iyy="${(m/12) * (w*w + d*d)}" 
+                iyz="0.0" 
+                izz="${(m/12) * (w*w + h*h)}"/>
+        </inertial>
+    </xacro:macro>
+
 
     <xacro:macro name="cylinder_inertia" params="m r h">
         <inertial>
@@ -166,4 +180,130 @@
         <origin xyz="${(-main_chassis_length / 2) + rear_caster_radius} 0 ${-main_chassis_height / 2}" rpy="0 0 0"/>
     </joint>
 
+
+    <!-- Odometry -->
+    <!-- Inertial Measurement Unit (IMU):
+         The IMU tracks things like specific-force, angular rate, and orientation.
+         On its own, an IMU is not reliable for local odometry due to drift and noise. To get around this, we can "fuse" it
+         with things like our encoders using some sort of signal processing (control system) filter. This fusion creates
+         more robust/accurate localization and mapping -->
+    <link name="imu_link">
+        <visual>
+            <geometry>
+            <box size="0.1 0.1 0.1"/>
+            </geometry>
+        </visual>
+
+        <collision>
+            <geometry>
+            <box size="0.1 0.1 0.1"/>
+            </geometry>
+        </collision>
+
+        <xacro:box_inertia m="0.1" w="0.1" d="0.1" h="0.1"/>
+    </link>
+
+    <joint name="imu_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="imu_link"/>
+        <origin xyz="0 0 0.01"/>
+    </joint>
+
+    <gazebo reference="imu_link">
+        <sensor name="imu_sensor" type="imu">
+            <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
+                <ros>
+                    <namespace>/ora_25/sensors</namespace>
+                    <remapping>~/out:=imu</remapping>
+                </ros>
+                <initial_orientation_as_reference>false</initial_orientation_as_reference>
+            </plugin>
+            <always_on>true</always_on>
+            <update_rate>100</update_rate>
+            <visualize>true</visualize>
+            <imu>
+                <angular_velocity>
+                    <x>
+                        <noise type="gaussian">
+                            <mean>0.0</mean>
+                            <stddev>2e-4</stddev>
+                            <bias_mean>0.0000075</bias_mean>
+                            <bias_stddev>0.0000008</bias_stddev>
+                        </noise>
+                    </x>
+                    <y>
+                        <noise type="gaussian">
+                            <mean>0.0</mean>
+                            <stddev>2e-4</stddev>
+                            <bias_mean>0.0000075</bias_mean>
+                            <bias_stddev>0.0000008</bias_stddev>
+                        </noise>
+                    </y>
+                    <z>
+                        <noise type="gaussian">
+                            <mean>0.0</mean>
+                            <stddev>2e-4</stddev>
+                            <bias_mean>0.0000075</bias_mean>
+                            <bias_stddev>0.0000008</bias_stddev>
+                        </noise>
+                    </z>
+                </angular_velocity>
+                <linear_acceleration>
+                    <x>
+                        <noise type="gaussian">
+                            <mean>0.0</mean>
+                            <stddev>1.7e-2</stddev>
+                            <bias_mean>0.1</bias_mean>
+                            <bias_stddev>0.001</bias_stddev>
+                        </noise>
+                    </x>
+                    <y>
+                        <noise type="gaussian">
+                            <mean>0.0</mean>
+                            <stddev>1.7e-2</stddev>
+                            <bias_mean>0.1</bias_mean>
+                            <bias_stddev>0.001</bias_stddev>
+                        </noise>
+                    </y>
+                    <z>
+                        <noise type="gaussian">
+                            <mean>0.0</mean>
+                            <stddev>1.7e-2</stddev>
+                            <bias_mean>0.1</bias_mean>
+                            <bias_stddev>0.001</bias_stddev>
+                        </noise>
+                    </z>
+                </linear_acceleration>
+            </imu>
+        </sensor>
+    </gazebo>
+
+    <gazebo>
+        <plugin name='diff_drive' filename='libgazebo_ros_diff_drive.so'>
+            <ros>
+                <namespace>/ora_25/sensors</namespace>
+                <remapping>~/out:=odom</remapping>
+            </ros>
+
+            <!-- wheels -->
+            <left_joint>mainwheel_left</left_joint>
+            <right_joint>mainwheel_right</right_joint>
+
+            <!-- kinematics -->
+            <wheel_separation>0.4</wheel_separation>
+            <wheel_diameter>0.2</wheel_diameter>
+
+            <!-- limits -->
+            <max_wheel_torque>20</max_wheel_torque>
+            <max_wheel_acceleration>1.0</max_wheel_acceleration>
+
+            <!-- output -->
+            <publish_odom>true</publish_odom>
+            <publish_odom_tf>false</publish_odom_tf>
+            <publish_wheel_tf>true</publish_wheel_tf>
+
+            <odometry_frame>odom</odometry_frame>
+            <robot_base_frame>base_link</robot_base_frame>
+        </plugin>
+    </gazebo>
 </robot>
