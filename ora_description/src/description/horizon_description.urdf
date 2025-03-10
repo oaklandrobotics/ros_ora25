@@ -190,13 +190,13 @@
     <link name="imu_link">
         <visual>
             <geometry>
-            <box size="0.1 0.1 0.1"/>
+                <box size="0.1 0.1 0.1"/>
             </geometry>
         </visual>
 
         <collision>
             <geometry>
-            <box size="0.1 0.1 0.1"/>
+                <box size="0.1 0.1 0.1"/>
             </geometry>
         </collision>
 
@@ -282,12 +282,11 @@
         <plugin name='diff_drive' filename='libgazebo_ros_diff_drive.so'>
             <ros>
                 <namespace>/ora_25/sensors</namespace>
-                <remapping>~/out:=odom</remapping>
             </ros>
 
             <!-- wheels -->
-            <left_joint>mainwheel_left</left_joint>
-            <right_joint>mainwheel_right</right_joint>
+            <left_joint>mainwheel_left_joint</left_joint>
+            <right_joint>mainwheel_right_joint</right_joint>
 
             <!-- kinematics -->
             <wheel_separation>0.4</wheel_separation>
