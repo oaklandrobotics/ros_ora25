@@ -9,13 +9,15 @@ import os
 
 def generate_launch_description():
     pkg_share = FindPackageShare(package='ora_description').find('ora_description')
-    default_model_path = os.path.join(pkg_share, 'src', 'description', 'horizon_description.urdf')
+    default_model_path = os.path.join(pkg_share, 'src', 'description', 'small_bot_description.urdf')
 
     # Visualization
     default_rviz_config_path = os.path.join(pkg_share, 'rviz', 'config.rviz')
     
     # Localization
     non_gps_ekf_config_path = os.path.join(pkg_share, 'config', 'non_fused_ekf.yaml')
+
+    world_path=os.path.join(pkg_share, 'world/igvc_world.sdf')
 
     # Publish robot state
     robot_state_publisher_node = Node(
@@ -71,7 +73,8 @@ def generate_launch_description():
         DeclareLaunchArgument(name='use_sim_time', default_value='True', description='Flag to enable use_sim_time'),
         DeclareLaunchArgument(name='rvizconfig', default_value=default_rviz_config_path, description='Absolute path to rviz config file'),
 
-        ExecuteProcess(cmd=['gazebo', '--verbose', '-s', 'libgazebo_ros_init.so', '-s', 'libgazebo_ros_factory.so'], output='screen'),
+        # ExecuteProcess(cmd=['gazebo', '--verbose', '-s', 'libgazebo_ros_init.so', '-s', 'libgazebo_ros_factory.so'], output='screen'),
+        ExecuteProcess(cmd=['gazebo', '--verbose', '-s', 'libgazebo_ros_init.so', '-s', 'libgazebo_ros_factory.so', world_path], output='screen'),
 
         # Launch nodes, spawn entity, then open visualization
         joint_state_publisher_node,

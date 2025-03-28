@@ -16,12 +16,19 @@
     <xacro:property name="wheel_chassis_gap" value="${(1 / 12) / 3.281}"/> <!-- 1 in. gap -->
     <xacro:property name="wheel_z_offset" value="${-main_chassis_height / 2}"/>
 
-    <xacro:property name="front_caster_radius" value="${(2 / 12) / 3.281}"/><!-- 4 in. diameter -->
-    <xacro:property name="rear_caster_radius" value="${(1 / 12) / 3.281}"/><!-- 2 in. diameter -->
+    <xacro:property name="front_caster_radius" value="${(4 / 12) / 3.281}"/><!-- 4 in. diameter -->
+    <xacro:property name="rear_caster_radius" value="${(4 / 12) / 3.281}"/><!-- 2 in. diameter -->
     <xacro:property name="caster_length_offset" value="${(main_chassis_length/2)-((1/12)/3.281)}"/>
     <xacro:property name="caster_z_offset" value="${-main_chassis_height / 2}"/>
 
-      <!-- Intertia property macros  -->
+    <!-- Zed -->
+    <xacro:arg name="camera_name"   default="zed" />
+    <xacro:arg name="camera_model"  default="zed2i" />
+    <xacro:arg name="use_zed_localization" default="true" />
+    <xacro:arg name="baseline" default="0.0" />
+
+
+    <!-- Intertia property macros  -->
     <xacro:macro name="chassis_inertia" params="m w h d">
         <inertial>
             <origin xyz="0 0 0" rpy="${pi/2} 0 ${pi/2}"/>

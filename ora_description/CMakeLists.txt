@@ -13,7 +13,7 @@ find_package(ament_cmake REQUIRED)
 
 # set destination directory for our src, launch, and rviz folders
 install(
-  DIRECTORY src launch rviz config
+  DIRECTORY src launch rviz config meshes world
   DESTINATION share/${PROJECT_NAME}
 )
 
