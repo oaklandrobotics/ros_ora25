@@ -12,6 +12,8 @@ WHEEL_RADIUS = WHEEL_DIA / 2
 class WheelParser(Node):
     def __init__(self):
         super().__init__('twist_to_wheel')
+        
+        print(f'Twist to wheel node started')
 
         # subscribe to cmd_vel from robot
         self.cmd_vel_sub_ = self.create_subscription(Twist, 'cmd_vel', self.cmd_vel_callback, 10)
@@ -19,7 +21,6 @@ class WheelParser(Node):
         # publish desired speed for each wheel
         self.right_motor_pub_raw = self.create_publisher(Float32, 'wheels/right/raw', 10)
         self.left_motor_pub_raw = self.create_publisher(Float32, 'wheels/left/raw', 10)
-        self.get_logger().info('Hello from twist_to_wheel')
         
     def cmd_vel_callback(self, vel):
         linear = vel.linear.x
