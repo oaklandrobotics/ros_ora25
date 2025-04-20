@@ -9,20 +9,20 @@ teleop_node:
     axis_linear:
       x: 1
     scale_linear:
-      x: 0.5
+      x: 0.75
     scale_linear_turbo:
-      x: 1.0
+      x: 2.2
 
     axis_angular:
       yaw: 3
     scale_angular:
-      yaw: 0.5
+      yaw: 0.75
     scale_angular_turbo:
-      yaw: 1.0
+      yaw: 1.5
 
     enable_button: 4
     enable_turbo_button: 5
 
-    # Deadman switch
+    # "Deadman switch" for the teleop node
     # Either left or right bumper has to be held down to move
     require_enable_button: true
