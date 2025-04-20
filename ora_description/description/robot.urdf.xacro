@@ -2,4 +2,8 @@
 <robot xmlns:xacro="https://www.ros.org/wiki/xacro" name="robot_name">
   <!-- Include all of the pieces of the robot -->
   <xacro:include filename="robot_core.xacro"/>
+  <xacro:include filename="gazebo_control.xacro"/>
+  
+  <!-- Sensors -->
+  <xacro:include filename="lidar.xacro"/>
 </robot>

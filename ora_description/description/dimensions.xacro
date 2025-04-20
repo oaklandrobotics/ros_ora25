@@ -37,9 +37,9 @@
   <xacro:property name="lidar_diameter" value="${0.070}"/>
   <xacro:property name="lidar_radius" value="${lidar_diameter / 2}"/>
   <xacro:property name="lidar_height" value="${0.051}"/>
-  <xacro:property name="lidar_z_offset" value="${(base_height / 2) + lidar_radius}"/>
+  <xacro:property name="lidar_z_offset" value="${base_height + 0.02}"/>
   <xacro:property name="lidar_y_offset" value="${0.0}"/>
-  <xacro:property name="lidar_x_offset" value="${0.0}"/>
+  <xacro:property name="lidar_x_offset" value="${(3 * base_length) / 4}"/>
 
   <!-- Zed -->
   <xacro:arg name="camera_name"   default="zed" />
