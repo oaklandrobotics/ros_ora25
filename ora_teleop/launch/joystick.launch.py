@@ -24,7 +24,7 @@ def generate_launch_description():
     name='teleop_node',
     parameters=[joystick_params],
     remappings=[
-      ('/cmd_vel', '/diff_drive_cont/cmd_vel_unstamped'),
+      ('/cmd_vel', '/cmd_vel_joy'),
     ],
   )
 

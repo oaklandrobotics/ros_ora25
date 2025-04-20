@@ -1,0 +1,13 @@
+twist_mux:
+  # Combine both teleop and nav2 cmd_vel topics to publish to the correct topic
+  # This will allow both teleop and navigation to work at the same time, but the teleop will have priority
+  ros__parameters:
+    topics:
+      navigation:
+        topic: /cmd_vel
+        timeout: 0.5
+        priority: 10
+      teleop:
+        topic: /cmd_vel_joy
+        timeout: 0.5
+        priority: 100
