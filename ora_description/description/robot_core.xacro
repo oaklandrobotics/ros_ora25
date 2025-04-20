@@ -10,10 +10,18 @@
 
   <!-- BASE LINK -->
 
-  <link name="base_link">
+  <link name="base_link"/>
   
-  </link>
-  
+  <!-- BASE FOOTPRINT -->
+
+  <link name="base_footprint"/>
+
+  <joint name="base_footprint_join" type="fixed">
+    <parent link="base_link"/>
+    <child link="base_footprint"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
   <!-- CHASSIS LINK -->
 
   <joint name="chassis_joint" type="fixed">
@@ -128,7 +136,7 @@
   <link name="caster_wheel_link">
     <visual>
       <geometry>
-        <sphere radius="${caster_radius}"/>
+        <sphere radius="${wheel_z_offset}"/>
       </geometry>
 
       <material name="black"/>
@@ -136,11 +144,11 @@
 
     <collision>
       <geometry>
-        <sphere radius="${caster_radius}"/>
+        <sphere radius="${wheel_z_offset}"/>
       </geometry>
     </collision>
 
-    <xacro:inertial_sphere mass="0.5" radius="${caster_radius}">
+    <xacro:inertial_sphere mass="0.5" radius="${wheel_z_offset}">
       <origin xyz="0 0 0" rpy="0 0 0"/>
     </xacro:inertial_sphere>
   </link>
