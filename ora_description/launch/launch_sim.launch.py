@@ -48,9 +48,27 @@ def generate_launch_description():
     actions=[ spawn_entity ]
   )
 
+  # Spawn diff drive controller and joint broadcaster from ros2_control
+  # This is necessary to get the robot to move
+  spawn_diff_drive = Node(
+      package='controller_manager',
+      executable='spawner',
+      arguments=['diff_drive_cont'],
+      output='screen'
+  )
+  
+  spawn_joint_broadcaster = Node(
+      package='controller_manager',
+      executable='spawner',
+      arguments=['joint_state_broadcaster'],
+      output='screen'
+  )
+
   # Launch rsp, gz, and spawn the bot in gz
   return LaunchDescription([
     rsp,
     gazebo,
     delayed_spawn,
+    spawn_diff_drive,
+    spawn_joint_broadcaster
   ])
