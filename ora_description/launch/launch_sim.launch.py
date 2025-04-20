@@ -19,7 +19,7 @@ def generate_launch_description():
         pkg_share,'launch','rsp.launch.py'
       )
     ]),
-    launch_arguments={'use_sim_time': 'true'}.items()
+    launch_arguments={'use_sim_time': 'true', 'use_ros2_control': 'true'}.items()
   )
 
   # Launch Gazebo with the standard ROS‑provided launch file
