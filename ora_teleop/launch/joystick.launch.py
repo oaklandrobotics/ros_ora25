@@ -27,9 +27,16 @@ def generate_launch_description():
       ('/cmd_vel', '/cmd_vel_joy'),
     ],
   )
+  
+  # reinit_control_node = Node(
+  #   package='ora_teleop',
+  #   executable='reinit_control',
+  #   output='screen'
+  # )
 
   return LaunchDescription([
     joystick_node,
     teleop_node,
+    # reinit_control_node
   ])
 
