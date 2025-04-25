@@ -1,8 +1,17 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="https://www.ros.org/wiki/xacro" name="robot_name">
   <!-- Args -->
-  <xacro:arg name="use_ros2_control" default="true"/>
+  <!-- General -->
   <xacro:arg name="sim_mode" default="false"/>
+
+  <!-- ROS2 control -->
+  <xacro:arg name="use_ros2_control" default="true"/>
+
+  <!-- Zed -->
+  <xacro:arg name="camera_name" default="zed"/>
+  <xacro:arg name="camera_model" default="zed2i"/>
+  <xacro:arg name="use_zed_localization" default="true" />
+  <xacro:arg name="baseline" default="0.0" />
 
   <!-- Include all of the pieces of the robot -->
   <xacro:include filename="robot_core.xacro"/>
@@ -17,6 +26,6 @@
 
   <!-- Sensors -->
   <xacro:include filename="lidar.xacro"/>
-  <xacro:include filename="camera.xacro"/>
+  <!-- <xacro:include filename="camera.xacro"/> -->
   
 </robot>
