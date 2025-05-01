@@ -1,13 +1,16 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>ora_description</name>
+  <name>ora_navigation</name>
   <version>0.0.1</version>
-  <description>TODO: Robot</description>
+  <description>TODO: Package description</description>
   <maintainer email="zacharytlain@gmail.com">zlain</maintainer>
   <license>TODO: License declaration</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <!-- Execution Dependencies -->
+  <exec_depend>twist_mux</exec_depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>

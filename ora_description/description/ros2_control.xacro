@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <!-- File contains the ros2_control configuration for the robot -->
+  <!-- Included are both controls for the real robot and a simulated Gazebo robot -->
+
+  <!-- Real Robot Config -->
+  <xacro:unless value="$(arg sim_mode)">
+    <ros2_control name="RealRobot" type="system">
+      
+      <!-- ODrive ros2 control package -->
+      <hardware>
+        <plugin>odrive_ros2_control_plugin/ODriveHardwareInterface</plugin>
+        <param name="can">can0</param>
+      </hardware>
+
+      <joint name="left_wheel_joint">
+        <param name="node_id">1</param>
+        <param name="invert">true</param>
+
+        <command_interface name="velocity"/>
+        <state_interface name="velocity"/>
+        <state_interface name="position"/>
+        <state_interface name="effort"/>
+      </joint>
+      
+      <joint name="right_wheel_joint">
+        <param name="node_id">0</param>
+        <param name="invert">false</param>
+
+        <command_interface name="velocity"/>
+        <state_interface name="velocity"/>
+        <state_interface name="position"/>
+        <state_interface name="effort"/>
+      </joint>
+    </ros2_control>
+  </xacro:unless>
+  <!-- Real Robot Config -->
+
+  <!-- Simulated Robot Config -->
+  <xacro:if value="$(arg sim_mode)">
+    <ros2_control name="GazeboSystem" type="system">
+      <hardware>
+        <plugin>gazebo_ros2_control/GazeboSystem</plugin>
+      </hardware>
+      <joint name="left_wheel_joint">
+        <command_interface name="velocity">
+          <param name="min">-10</param>
+          <param name="max">10</param>
+        </command_interface>
+        <state_interface name="velocity"/>
+        <state_interface name="position"/>
+      </joint>
+      <joint name="right_wheel_joint">
+        <command_interface name="velocity">
+          <param name="min">-10</param>
+          <param name="max">10</param>
+        </command_interface>
+        <state_interface name="velocity"/>
+        <state_interface name="position"/>
+      </joint>
+    </ros2_control>
+
+    <gazebo>
+      <plugin name="gazebo_ros2_control" filename="libgazebo_ros2_control.so">
+        <parameters>$(find ora_description)/config/my_controllers.yaml</parameters>
+        <parameters>$(find ora_description)/config/gazebo_ros2_control_use_sim.yaml</parameters>
+      </plugin>
+    </gazebo>
+  </xacro:if>
+  <!-- Simulated Robot Config -->
+</robot>
