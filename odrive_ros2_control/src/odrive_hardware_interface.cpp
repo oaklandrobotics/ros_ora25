@@ -37,6 +37,10 @@ public:
     return_type write(const rclcpp::Time&, const rclcpp::Duration&) override;
 
     void reinitialize();
+<<<<<<< HEAD
+=======
+    void estop();
+>>>>>>> main
 
 private:
     void on_can_msg(const can_frame& frame);
@@ -49,8 +53,16 @@ private:
     SocketCanIntf can_intf_;
     rclcpp::Time timestamp_;
 
+<<<<<<< HEAD
     // For reinitialing the control
     rclcpp::Subscription<std_msgs::msg::Empty>::SharedPtr reinit_sub_;
+=======
+    bool estop_active_;
+
+    // For reinitialing the control
+    rclcpp::Subscription<std_msgs::msg::Empty>::SharedPtr reinit_sub_;
+    rclcpp::Subscription<std_msgs::msg::Empty>::SharedPtr estop_sub_;
+>>>>>>> main
 };
 
 struct Axis {
@@ -120,16 +132,24 @@ CallbackReturn ODriveHardwareInterface::on_init(const hardware_interface::Hardwa
         return CallbackReturn::ERROR;
     }
 
+<<<<<<< HEAD
+=======
+    estop_active_ = false;
+
+>>>>>>> main
     can_intf_name_ = info_.hardware_parameters["can"];
 
     for (auto& joint : info_.joints) {
         bool invert_joint = false;
 
+<<<<<<< HEAD
         RCLCPP_INFO(
             rclcpp::get_logger("ODriveHardwareInterface"),
             "Iteration 3"
         );
 
+=======
+>>>>>>> main
         auto it = joint.parameters.find("invert");
 
         if (it != joint.parameters.end())
@@ -189,6 +209,18 @@ CallbackReturn ODriveHardwareInterface::on_configure(const State&) {
         }
     );
 
+<<<<<<< HEAD
+=======
+    estop_sub_ = node->create_subscription<std_msgs::msg::Empty>(
+        "/odrive/estop", 10,
+        [this] (const std_msgs::msg::Empty::SharedPtr)
+        {
+            RCLCPP_INFO(rclcpp::get_logger("ODriveHardwareInterface"), "Estop request received.");
+            this->estop();
+        }
+    );
+
+>>>>>>> main
     if (!can_intf_.init(can_intf_name_, &event_loop_, std::bind(&ODriveHardwareInterface::on_can_msg, this, _1))) {
         RCLCPP_ERROR(
             rclcpp::get_logger("ODriveHardwareInterface"),
@@ -329,6 +361,14 @@ return_type ODriveHardwareInterface::read(const rclcpp::Time& timestamp, const r
 }
 
 return_type ODriveHardwareInterface::write(const rclcpp::Time&, const rclcpp::Duration&) {
+<<<<<<< HEAD
+=======
+    if (estop_active_) {
+        RCLCPP_DEBUG(rclcpp::get_logger("ODriveHardwareInterface"), "Estop is active. Skipping write.");
+        return return_type::OK;
+    }
+
+>>>>>>> main
     for (auto& axis : axes_) {
         // Send the CAN message that fits the set of enabled setpoints
         if (axis.pos_input_enabled_) {
@@ -449,6 +489,17 @@ void Axis::on_can_msg(const rclcpp::Time&, const can_frame& frame) {
 
 // For reinitializing control
 void ODriveHardwareInterface::reinitialize() {
+<<<<<<< HEAD
+=======
+    if (estop_active_)
+    {
+        estop_active_ = false;
+        RCLCPP_INFO(rclcpp::get_logger("ODriveHardwareInterface"), "Clearing estop...");
+    }
+
+    RCLCPP_INFO(rclcpp::get_logger("ODriveHardwareInterface"), "Reinitializing ODrive Control...");
+
+>>>>>>> main
     can_intf_.deinit();
     
     std::this_thread::sleep_for(std::chrono::milliseconds(200));
@@ -462,5 +513,20 @@ void ODriveHardwareInterface::reinitialize() {
     RCLCPP_INFO(rclcpp::get_logger("ODriveHardwareInterface"), "ODrive reinit complete.");
 }
 
+<<<<<<< HEAD
+=======
+// For estop
+void ODriveHardwareInterface::estop() {
+    estop_active_ = true;
+
+    RCLCPP_WARN(rclcpp::get_logger("ODriveHardwareInterface"), "Estop activated. Sending AXIS_STATE_IDLE to all axes.");
+
+    for (auto& axis : axes_) {
+        Set_Axis_State_msg_t idle_msg;
+        idle_msg.Axis_Requested_State = AXIS_STATE_IDLE;
+        axis.send(idle_msg);
+    }
+}
+>>>>>>> main
 
 PLUGINLIB_EXPORT_CLASS(odrive_ros2_control::ODriveHardwareInterface, hardware_interface::SystemInterface)
