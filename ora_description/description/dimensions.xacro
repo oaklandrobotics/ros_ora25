@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="https://www.ros.org/wiki/xacro">
+  <!-- This file contains the dimensions of the robot -->
+  <!-- The dimensions are defined in meters -->
+
+  <!-- Convert mm to meters -->
+  <xacro:property name="mm_to_m" value="${0.001}"/>
+
+  <!-- Convert inches to meters -->
+  <xacro:property name="in_to_m" value="${0.0254}"/>
+
+  <!-- Base Chassis Dimensions -->
+  <xacro:property name="base_length" value="${0.508}"/>
+  <xacro:property name="base_width" value="${0.406}"/>
+  <xacro:property name="base_height" value="${0.406}"/>
+
+  <!-- Wheel Dimensions / Location -->
+  <xacro:property name="wheel_diameter" value="${203.101 * mm_to_m}"/>
+  <xacro:property name="wheel_radius" value="${wheel_diameter / 2}"/>
+  <xacro:property name="wheel_width" value="${48 * mm_to_m}"/>
+  <xacro:property name="wheel_y_gap" value="${0.012}"/>
+  <xacro:property name="wheel_z_offset" value="${wheel_radius - (1.5 * 0.041)}"/>
+  <xacro:property name="wheel_y_offset" value="${(base_width / 2) + 2 * wheel_y_gap}"/>
+  <xacro:property name="wheel_x_center_to_back" value="${.095}"/>
+  <xacro:property name="wheel_x_offset" value="${(base_length / 2) - wheel_x_center_to_back - (wheel_radius / 1.5)}"/>
+
+  <!-- Caster Dimensions / Location -->
+  <xacro:property name="caster_diameter" value="${0.052}"/>
+  <xacro:property name="caster_radius" value="${caster_diameter / 2}"/>
+  <xacro:property name="caster_width" value="${16 * mm_to_m}"/>
+  <xacro:property name="caster_z_offset" value="${-0.012}"/>
+  <xacro:property name="caster_y_offset" value="${0}"/>
+  <xacro:property name="caster_x_front_to_caster" value="${0.0905}"/>
+  <xacro:property name="caster_x_offset" value="${base_length - caster_x_front_to_caster}"/>
+
+  <!-- Lidar -->
+  <xacro:property name="lidar_diameter" value="${0.070}"/>
+  <xacro:property name="lidar_radius" value="${lidar_diameter / 2}"/>
+  <xacro:property name="lidar_height" value="${0.051}"/>
+  <xacro:property name="lidar_z_offset" value="${base_height + 0.02}"/>
+  <xacro:property name="lidar_y_offset" value="${0.0}"/>
+  <xacro:property name="lidar_x_offset" value="${(3 * base_length) / 4}"/>
+
+  <!-- Zed -->
+  <xacro:arg name="camera_name"   default="zed" />
+  <xacro:arg name="camera_model"  default="zed2i" />
+  <xacro:arg name="use_zed_localization" default="true" />
+  <xacro:property name="zed_z_offset" value="${0.508}"/>
+  <xacro:property name="zed_y_offset" value="${0.0}"/>
+  <xacro:property name="zed_x_offset" value="${base_length / 2}"/>
+
+</robot>
