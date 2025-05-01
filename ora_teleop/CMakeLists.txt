@@ -11,6 +11,13 @@ find_package(ament_cmake REQUIRED)
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
 
+find_package(rclcpp REQUIRED)
+find_package(sensor_msgs REQUIRED)
+find_package(std_msgs REQUIRED)
+
+add_executable(reinit_node src/reinit_node.cpp)
+ament_target_dependencies(reinit_node rclcpp sensor_msgs std_msgs)
+
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   # the following line skips the linter which checks for copyrights
@@ -24,8 +31,13 @@ if(BUILD_TESTING)
 endif()
 
 install(
-  DIRECTORY config launch src
+  DIRECTORY config launch
   DESTINATION share/${PROJECT_NAME}
+)
+
+install(
+  TARGETS reinit_node
+  DESTINATION lib/${PROJECT_NAME}
 )
 
 ament_package()
