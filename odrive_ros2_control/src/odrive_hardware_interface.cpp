@@ -53,8 +53,11 @@ private:
     bool estop_active_;
 
     // For reinitialing the control
-    rclcpp::Subscription<std_msgs::msg::Empty>::SharedPtr reinit_sub_;
-    rclcpp::Subscription<std_msgs::msg::Empty>::SharedPtr estop_sub_;
+    std::shared_ptr<rclcpp::Node> node_;
+    std::thread spin_thread_;
+
+    rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr reinit_srv_;
+    rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr estop_srv_;
 };
 
 struct Axis {
@@ -179,25 +182,53 @@ CallbackReturn ODriveHardwareInterface::on_init(const hardware_interface::Hardwa
 
 CallbackReturn ODriveHardwareInterface::on_configure(const State&) {
     // For reinitializing control
-    auto node = rclcpp::Node::make_shared("odrive_reinit_listener");
+    node_ = rclcpp::Node::make_shared("odrive_reinit_listener");
 
-    reinit_sub_ = node->create_subscription<std_msgs::msg::Empty>(
-        "/odrive/reinit", 10,
-        [this] (const std_msgs::msg::Empty::SharedPtr)
+    // Trying out a service instead since I am not really worried about sending data
+    reinit_srv_ = node->create_service<std_srvs::srv::Trigger>(
+        "/odrive/reinit",
+        [this] (const std_srvs::srv::Trigger::Request::SharedPtr, std_srvs::srv::Trigger::Response::SharedPtr res)
         {
-            RCLCPP_INFO(rclcpp::get_logger("ODriveHardwareInterface"), "Reinit request received.");
             this->reinitialize();
+            res->success = true;
+            res->message = "Reinitialization Complete";
         }
     );
 
-    estop_sub_ = node->create_subscription<std_msgs::msg::Empty>(
-        "/odrive/estop", 10,
-        [this] (const std_msgs::msg::Empty::SharedPtr)
+    // reinit_sub_ = node->create_subscription<std_msgs::msg::Empty>(
+    //     "/odrive/reinit", 10,
+    //     [this] (const std_msgs::msg::Empty::SharedPtr)
+    //     {
+    //         RCLCPP_INFO(rclcpp::get_logger("ODriveHardwareInterface"), "Reinit request received.");
+    //         this->reinitialize();
+    //     }
+    // );
+
+    // Trying out a service instead since I am not really worried about sending data
+    estop_srv_ = node->create_service<std_srvs::srv::Trigger>(
+        "/odrive/estop",
+        [this] (const std_srvs::srv::Trigger::Request::SharedPtr, std_srvs::srv::Trigger::Response::SharedPtr res)
         {
-            RCLCPP_INFO(rclcpp::get_logger("ODriveHardwareInterface"), "Estop request received.");
             this->estop();
+            res->success = true;
+            res->message = "Estop Activated";
         }
     );
+
+    // estop_sub_ = node->create_subscription<std_msgs::msg::Empty>(
+    //     "/odrive/estop", 10,
+    //     [this] (const std_msgs::msg::Empty::SharedPtr)
+    //     {
+    //         RCLCPP_INFO(rclcpp::get_logger("ODriveHardwareInterface"), "Estop request received.");
+    //         this->estop();
+    //     }
+    // );
+
+    // Spin up the node
+    spin_thread_ = std::thread([this]() { rclcpp::spin(node_); });
+    spin_thread_.detach();
+
+    RCLCPP_INFO(rclcpp::get_logger("ODriveHardwareInterface"), "Spinning service node in background thread.");
 
     if (!can_intf_.init(can_intf_name_, &event_loop_, std::bind(&ODriveHardwareInterface::on_can_msg, this, _1))) {
         RCLCPP_ERROR(
@@ -212,6 +243,17 @@ CallbackReturn ODriveHardwareInterface::on_configure(const State&) {
 }
 
 CallbackReturn ODriveHardwareInterface::on_cleanup(const State&) {
+    // Cleanup the reinitialization node
+    if (node_)
+    {
+        node_->get_node_base_interface()->get_context()->shutdown("Shutting down ODrive services.");
+    }
+
+    if (spin_thread_.joinable())
+    {
+        spin_thread_.join();
+    }
+
     can_intf_.deinit();
     return CallbackReturn::SUCCESS;
 }

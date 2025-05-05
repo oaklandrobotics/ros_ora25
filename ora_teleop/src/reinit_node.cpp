@@ -1,6 +1,7 @@
 #include "rclcpp/rclcpp.hpp"
 #include "sensor_msgs/msg/joy.hpp"
 #include "std_msgs/msg/empty.hpp"
+#include "std_srvs/srv/trigger.hpp"
 
 class ReinitControlNode : public rclcpp::Node
 {
@@ -12,13 +13,16 @@ public:
       std::bind(&ReinitControlNode::joy_callback, this, std::placeholders::_1)
     );
 
-    reinit_pub_ = this->create_publisher<std_msgs::msg::Empty>("/odrive/reinit", 1000);
-    estop_pub_ = this->create_publisher<std_msgs::msg::Empty>("/odrive/estop", 1000);
+    reinit_client_ = this->create_client<std_srvs::srv::Trigger>("/odrive/reinit");
+    estop_client_ = this->create_client<std_srvs::srv::Trigger>("/odrive/estop");
 
     RCLCPP_INFO(this->get_logger(), "ReinitControlNode initialized");
   }
 
 private:
+  rclcpp::Client<std_srvs::srv::Trigger>::SharedPtr reinit_client_;
+  rclcpp::Client<std_srvs::srv::Trigger>::SharedPtr estop_client_;
+
   bool reinitPress = false;
   bool estopPress = false;
 
@@ -33,7 +37,13 @@ private:
         if (!reinitPress)
         {
           RCLCPP_INFO(this->get_logger(), "Reinit button pressed");
-          reinit_pub_->publish(std_msgs::msg::Empty());
+          
+          if (reinit_client_->wait_for_service(std::chrono::seconds(1)))
+          {
+            // Send trigger as a request to the service
+            auto req = std::make_shared<std_srvs::srv::Trigger::Request>();
+            auto result = reinit_client_->async_send_request(req);
+          }
 
           reinitPress = true;
         }
@@ -50,7 +60,13 @@ private:
         if (!estopPress)
         {
           RCLCPP_INFO(this->get_logger(), "Estop button pressed");
-          estop_pub_->publish(std_msgs::msg::Empty());
+          
+          if (estop_client_->wait_for_service(std::chrono::seconds(1)))
+          {
+            // Send trigger as a request to the service
+            auto req = std::make_shared<std_srvs::srv::Trigger::Request>();
+            auto result = estop_client_->async_send_request(req);
+          }
 
           estopPress = true;
         }
