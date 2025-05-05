@@ -3,50 +3,15 @@ import os
 from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription
-<<<<<<< HEAD
-from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.actions import IncludeLaunchDescription, ExecuteProcess, TimerAction
-=======
 from launch.substitutions import LaunchConfiguration
 from launch.conditions import IfCondition, UnlessCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, ExecuteProcess, TimerAction
->>>>>>> main
 from launch_ros.actions import Node
 
 def generate_launch_description():
   pkg_share = get_package_share_directory('ora_teleop')
 
-<<<<<<< HEAD
-  joystick_params = os.path.join(pkg_share, 'config', 'joystick.yaml')
-
-  joystick_node = Node(
-    package='joy',
-    executable='joy_node',
-    parameters=[joystick_params],
-  )
-  
-  teleop_node = Node(
-    package='teleop_twist_joy',
-    executable='teleop_node',
-    name='teleop_node',
-    parameters=[joystick_params],
-    remappings=[
-      ('/cmd_vel', '/cmd_vel_joy'),
-    ],
-  )
-  
-  # reinit_control_node = Node(
-  #   package='ora_teleop',
-  #   executable='reinit_control',
-  #   output='screen'
-  # )
-
-  return LaunchDescription([
-    joystick_node,
-    teleop_node,
-    # reinit_control_node
-=======
   use_bt = LaunchConfiguration('use_bt')
 
   bt_joystick_params = os.path.join(pkg_share, 'config', 'bt_joy.yaml')
@@ -109,6 +74,5 @@ def generate_launch_description():
     wire_teleop_node,
     
     reinit_control_node,
->>>>>>> main
   ])
 
