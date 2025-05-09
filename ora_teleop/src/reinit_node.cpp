@@ -1,6 +1,5 @@
 #include "rclcpp/rclcpp.hpp"
 #include "sensor_msgs/msg/joy.hpp"
-#include "std_msgs/msg/empty.hpp"
 #include "std_srvs/srv/trigger.hpp"
 
 class ReinitControlNode : public rclcpp::Node
@@ -86,8 +85,6 @@ private:
 
 
   rclcpp::Subscription<sensor_msgs::msg::Joy>::SharedPtr joy_sub_;
-  rclcpp::Publisher<std_msgs::msg::Empty>::SharedPtr reinit_pub_;
-  rclcpp::Publisher<std_msgs::msg::Empty>::SharedPtr estop_pub_;
 };
 
 int main(int argc, char *argv[])

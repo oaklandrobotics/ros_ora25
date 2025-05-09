@@ -13,10 +13,10 @@ find_package(ament_cmake REQUIRED)
 
 find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
-find_package(std_msgs REQUIRED)
+find_package(std_srvs REQUIRED)
 
 add_executable(reinit_node src/reinit_node.cpp)
-ament_target_dependencies(reinit_node rclcpp sensor_msgs std_msgs)
+ament_target_dependencies(reinit_node rclcpp sensor_msgs std_srvs)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -29,6 +29,12 @@ if(BUILD_TESTING)
   set(ament_cmake_cpplint_FOUND TRUE)
   ament_lint_auto_find_test_dependencies()
 endif()
+
+include_directories(
+  include
+  ${std_srvs_INCLUDE_DIRS}
+)
+
 
 install(
   DIRECTORY config launch

@@ -7,8 +7,8 @@
 #include "pluginlib/class_list_macros.hpp"
 #include "rclcpp/rclcpp.hpp"
 #include "socket_can.hpp"
+#include "std_srvs/srv/trigger.hpp"
 
-#include "std_msgs/msg/empty.hpp"
 
 namespace odrive_ros2_control {
 
@@ -185,7 +185,7 @@ CallbackReturn ODriveHardwareInterface::on_configure(const State&) {
     node_ = rclcpp::Node::make_shared("odrive_reinit_listener");
 
     // Trying out a service instead since I am not really worried about sending data
-    reinit_srv_ = node->create_service<std_srvs::srv::Trigger>(
+    reinit_srv_ = node_->create_service<std_srvs::srv::Trigger>(
         "/odrive/reinit",
         [this] (const std_srvs::srv::Trigger::Request::SharedPtr, std_srvs::srv::Trigger::Response::SharedPtr res)
         {
@@ -205,7 +205,7 @@ CallbackReturn ODriveHardwareInterface::on_configure(const State&) {
     // );
 
     // Trying out a service instead since I am not really worried about sending data
-    estop_srv_ = node->create_service<std_srvs::srv::Trigger>(
+    estop_srv_ = node_->create_service<std_srvs::srv::Trigger>(
         "/odrive/estop",
         [this] (const std_srvs::srv::Trigger::Request::SharedPtr, std_srvs::srv::Trigger::Response::SharedPtr res)
         {
@@ -489,6 +489,9 @@ void Axis::on_can_msg(const rclcpp::Time&, const can_frame& frame) {
                     tempPosEst *= -1;
                     tempVelEst *= -1;
                 }
+
+                // tempPosEst /= 5;
+                // tempVelEst /= 5;
                 
                 pos_estimate_ = tempPosEst * (2 * M_PI);
                 vel_estimate_ = tempVelEst * (2 * M_PI);
