@@ -393,7 +393,10 @@ return_type ODriveHardwareInterface::write(const rclcpp::Time&, const rclcpp::Du
             msg.Input_Pos = axis.pos_setpoint_ / (2 * M_PI);
             msg.Vel_FF = axis.vel_input_enabled_ ? (axis.vel_setpoint_ / (2 * M_PI)) : 0.0f;
             msg.Torque_FF = axis.torque_input_enabled_ ? axis.torque_setpoint_ : 0.0f;
+
             axis.send(msg);
+            std::this_thread::sleep_for(std::chrono::microseconds(200));
+            
         } else if (axis.vel_input_enabled_) {
             Set_Input_Vel_msg_t msg;
             
@@ -462,7 +465,11 @@ void ODriveHardwareInterface::set_axis_command_mode(const Axis& axis) {
     }
 
     axis.send(control_msg);
+    std::this_thread::sleep_for(std::chrono::microseconds(500));
+
     axis.send(clear_error_msg);
+    std::this_thread::sleep_for(std::chrono::microseconds(500));
+
     axis.send(state_msg);
 }
 
