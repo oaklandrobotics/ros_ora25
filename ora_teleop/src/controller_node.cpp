@@ -15,7 +15,7 @@ public:
     reinit_client_ = this->create_client<std_srvs::srv::Trigger>("/odrive/reinit");
     estop_client_ = this->create_client<std_srvs::srv::Trigger>("/odrive/estop");
     auto_light_client_ = this->create_client<std_srvs::srv::Trigger>("/auto_light");
-    auto_navigation_client_ = this->create_client<std_srvs::srv::Trigger>("/auto_light");
+    auto_navigation_client_ = this->create_client<std_srvs::srv::Trigger>("/auto_navigation");
 
     RCLCPP_INFO(this->get_logger(), "ControllerNode initialized");
   }
