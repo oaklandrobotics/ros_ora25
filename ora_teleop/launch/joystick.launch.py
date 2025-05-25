@@ -54,9 +54,9 @@ def generate_launch_description():
     condition=UnlessCondition(use_bt)
   )
   
-  reinit_control_node = Node(
+  controller_node = Node(
     package='ora_teleop',
-    executable='reinit_node',
+    executable='controller_node',
     output='screen'
   )
 
@@ -73,6 +73,7 @@ def generate_launch_description():
     bt_teleop_node,
     wire_teleop_node,
     
-    reinit_control_node,
+      controller_node = Node(
+,
   ])
 

@@ -15,8 +15,8 @@ find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(std_srvs REQUIRED)
 
-add_executable(reinit_node src/reinit_node.cpp)
-ament_target_dependencies(reinit_node rclcpp sensor_msgs std_srvs)
+add_executable(controller_node src/controller_node.cpp)
+ament_target_dependencies(controller_node rclcpp sensor_msgs std_srvs)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -42,7 +42,7 @@ install(
 )
 
 install(
-  TARGETS reinit_node
+  TARGETS controller_node
   DESTINATION lib/${PROJECT_NAME}
 )
 
