@@ -41,6 +41,14 @@
   <xacro:property name="lidar_y_offset" value="${0.0}"/>
   <xacro:property name="lidar_x_offset" value="${(3 * base_length) / 4}"/>
 
+  <!-- GPS -->
+  <xacro:property name="gps_diameter" value="${0.035}"/>
+  <xacro:property name="gps_radius" value="${gps_diameter / 2}"/>
+  <xacro:property name="gps_height" value="${0.02}"/>
+  <xacro:property name="gps_z_offset" value="${base_height + 0.02}"/>
+  <xacro:property name="gps_y_offset" value="${0.0}"/>
+  <xacro:property name="gps_x_offset" value="${0.0}"/>
+
   <!-- Zed -->
   <xacro:arg name="camera_name"   default="zed" />
   <xacro:arg name="camera_model"  default="zed2i" />
