@@ -17,19 +17,7 @@ class stacklight_service(Node):
 
     def toggle_flash(self, request, response):
         self.flashing = not self.flashing
-
-        # output_pin = 18
-        # GPIO.set_mode(GPIO.BCM)
-        # GPIO.setup(output_pin, GPIO.OUT, initial = GPIO.HIGH)
-        # curr = GPIO.HIGH
-        # try:
-        #     while True:
-        #         time.sleep(.5)
-        #         GPIO.output(output_pin, curr)
-        #         curr ^= GPIO.HIGH
-        # finally:
-        #     GPIO.cleanup()
-
+        self.get_logger.info("Flashing toggled")
         return self.flashing
     
     def flash_light(self):
