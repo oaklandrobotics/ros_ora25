@@ -73,7 +73,6 @@ def generate_launch_description():
     bt_teleop_node,
     wire_teleop_node,
     
-      controller_node = Node(
-,
+    controller_node,
   ])
 

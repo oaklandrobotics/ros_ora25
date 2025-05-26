@@ -10,9 +10,9 @@ teleop_node:
     axis_linear:
       x: 1
     scale_linear:
-      x: 5.0
+      x: 2.5
     scale_linear_turbo:
-      x: 7.5
+      x: 2.5
 
     # Right stick X axis is left/right
     axis_angular:
@@ -20,7 +20,7 @@ teleop_node:
     scale_angular:
       yaw: 5.0
     scale_angular_turbo:
-      yaw: 7.5
+      yaw: 5.0
 
     # Left bumper is normal enable button
     # Right bumper is turbo enable button
