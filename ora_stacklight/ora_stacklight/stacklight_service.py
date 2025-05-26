@@ -9,6 +9,7 @@ class stacklight_service(Node):
         self.srv = self.create_service(bool, 'auto_light', self.toggle_flash)
         self.flashing = False
         self.rate
+        #NOTE: the physical pin on the Jetson that will be used is pin 12
         self.output_pin = 18
         self.flash_light()
         self.curr = GPIO.high
