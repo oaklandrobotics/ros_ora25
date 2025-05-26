@@ -27,7 +27,7 @@ class stacklight_service(Node):
                 try:
                     while True:
                         time.sleep(.5)
-                        GPIO.output(output_pin, curr)
+                        GPIO.output(self.output_pin, curr)
                         curr ^= GPIO.HIGH
                 finally:
                     GPIO.cleanup()
