@@ -1,35 +1,55 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="https://www.ros.org/wiki/xacro">
-  <joint name="base_joint" type="fixed">
+  <joint name="gps_joint" type="fixed">
     <parent link="base_link"/>
-    <child link="base_footprint" />
+    <child link="gps_link" />
     <origin xyz="${gps_x_offset} ${gps_y_offset} ${gps_z_offset}" rpy="0 0 0"/>
   </joint>
 
-  <sensor name="tb3_gps" type="gps">
-    <always_on>true</always_on>
-    <update_rate>1</update_rate>
-    <pose>0 0 0 0 0 0</pose>
-    <gps>
-      <position_sensing>
-        <horizontal>
-          <noise type="gaussian">
-            <mean>0.0</mean>
-            <stddev>0.01</stddev>
-          </noise>
-        </horizontal>
-        <vertical>
-          <noise type="gaussian">
-            <mean>0.0</mean>
-            <stddev>0.01</stddev>
-          </noise>
-        </vertical>
-      </position_sensing>
-    </gps>
-    <plugin name="gps_controller" filename="libgazebo_ros_gps_sensor.so">
-      <ros>
-        <remapping>~/out:=/gps/fix</remapping>
-      </ros>
-    </plugin>
-  </sensor>
+  <link name="gps_link">
+    <visual>
+      <geometry>
+        <cylinder radius="${gps_radius}" length="${gps_height}" />
+      </geometry>
+    </visual>
+
+    <collision>
+      <geometry>
+        <cylinder radius="${gps_radius}" length="${gps_height}" />
+      </geometry>
+    </collision>
+
+    <xacro:inertial_cylinder mass="0.15" length="${gps_height}" radius="${gps_radius}">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </xacro:inertial_cylinder>
+  </link>
+
+  <gazebo>
+    <sensor name="tb3_gps" type="gps">
+      <always_on>true</always_on>
+      <update_rate>1</update_rate>
+      <pose>0 0 0 0 0 0</pose>
+      <gps>
+        <position_sensing>
+          <horizontal>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>0.01</stddev>
+            </noise>
+          </horizontal>
+          <vertical>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>0.01</stddev>
+            </noise>
+          </vertical>
+        </position_sensing>
+      </gps>
+      <plugin name="gps_controller" filename="libgazebo_ros_gps_sensor.so">
+        <ros>
+          <remapping>~/out:=/gps/fix</remapping>
+        </ros>
+      </plugin>
+    </sensor>
+  </gazebo>
 </robot>

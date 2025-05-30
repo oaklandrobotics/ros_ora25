@@ -45,9 +45,9 @@
   <xacro:property name="gps_diameter" value="${0.035}"/>
   <xacro:property name="gps_radius" value="${gps_diameter / 2}"/>
   <xacro:property name="gps_height" value="${0.02}"/>
-  <xacro:property name="gps_z_offset" value="${base_height + 0.02}"/>
+  <xacro:property name="gps_z_offset" value="${base_height}"/>
   <xacro:property name="gps_y_offset" value="${0.0}"/>
-  <xacro:property name="gps_x_offset" value="${0.0}"/>
+  <xacro:property name="gps_x_offset" value="${base_length / 2}"/>
 
   <!-- Zed -->
   <xacro:arg name="camera_name"   default="zed" />
