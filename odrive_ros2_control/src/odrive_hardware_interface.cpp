@@ -490,8 +490,8 @@ void Axis::on_can_msg(const rclcpp::Time&, const can_frame& frame) {
                     tempVelEst *= -1;
                 }
 
-                // tempPosEst /= 5;
-                // tempVelEst /= 5;
+                tempPosEst /= 16.23;
+                tempVelEst /= 16.23;
                 
                 pos_estimate_ = tempPosEst * (2 * M_PI);
                 vel_estimate_ = tempVelEst * (2 * M_PI);
