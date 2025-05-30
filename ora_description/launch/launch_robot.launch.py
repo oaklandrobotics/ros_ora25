@@ -60,7 +60,7 @@ def generate_launch_description():
       'channel_type'    : 'serial',
       'serial_port'     : lidar_serial_port,
       'serial_baudrate' : '115200',
-      'frame_id'        : 'laser',
+      'frame_id'        : 'laser_frame',
       'inverted'        : 'false',
       'angle_compensate': 'true',
       'scan_mode'       : 'Sensitivity'

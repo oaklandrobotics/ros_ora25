@@ -23,7 +23,7 @@
   <xacro:property name="wheel_z_offset" value="${wheel_radius - (1.5 * 0.041)}"/>
   <xacro:property name="wheel_y_offset" value="${(base_width / 2) + 2 * wheel_y_gap}"/>
   <xacro:property name="wheel_x_center_to_back" value="${.095}"/>
-  <xacro:property name="wheel_x_offset" value="${chassis_offset + (wheel_radius / 2)}"/>
+  <xacro:property name="wheel_x_offset" value="${(wheel_radius / 2)}"/>
 
   <!-- Caster Dimensions / Location -->
   <xacro:property name="caster_diameter" value="${0.052}"/>
@@ -32,7 +32,7 @@
   <xacro:property name="caster_z_offset" value="${-0.012}"/>
   <xacro:property name="caster_y_offset" value="${0}"/>
   <xacro:property name="caster_x_front_to_caster" value="${0.0905}"/>
-  <xacro:property name="caster_x_offset" value="${base_length - caster_x_front_to_caster}"/>
+  <xacro:property name="caster_x_offset" value="${base_length - caster_x_front_to_caster - (10 * in_to_m)}"/>
 
   <!-- Lidar -->
   <xacro:property name="lidar_diameter" value="${0.070}"/>
@@ -40,7 +40,7 @@
   <xacro:property name="lidar_height" value="${0.051}"/>
   <xacro:property name="lidar_z_offset" value="${base_height + 0.04}"/>
   <xacro:property name="lidar_y_offset" value="${0.0}"/>
-  <xacro:property name="lidar_x_offset" value="${(3 * base_length) / 4}"/>
+  <xacro:property name="lidar_x_offset" value="${4 * in_to_m}"/>
 
   <!-- GPS -->
   <xacro:property name="gps_diameter" value="${0.035}"/>
@@ -48,7 +48,7 @@
   <xacro:property name="gps_height" value="${0.02}"/>
   <xacro:property name="gps_z_offset" value="${base_height}"/>
   <xacro:property name="gps_y_offset" value="${0.0}"/>
-  <xacro:property name="gps_x_offset" value="${base_length / 2}"/>
+  <xacro:property name="gps_x_offset" value="${11.5 * in_to_m}"/>
 
   <!-- Zed -->
   <xacro:arg name="camera_name"   default="zed" />
@@ -56,6 +56,6 @@
   <xacro:arg name="use_zed_localization" default="true" />
   <xacro:property name="zed_z_offset" value="${0.508}"/>
   <xacro:property name="zed_y_offset" value="${0.0}"/>
-  <xacro:property name="zed_x_offset" value="${base_length / 2}"/>
+  <xacro:property name="zed_x_offset" value="${8.5 * in_to_m}"/>
 
 </robot>

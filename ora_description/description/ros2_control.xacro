@@ -10,11 +10,11 @@
       <!-- ODrive ros2 control package -->
       <hardware>
         <plugin>odrive_ros2_control_plugin/ODriveHardwareInterface</plugin>
-        <param name="can">can0</param>
+        <param name="can">can1</param>
       </hardware>
 
       <joint name="left_wheel_joint">
-        <param name="node_id">1</param>
+        <param name="node_id">0</param>
         <param name="invert">true</param>
 
         <command_interface name="velocity"/>
@@ -24,7 +24,7 @@
       </joint>
       
       <joint name="right_wheel_joint">
-        <param name="node_id">0</param>
+        <param name="node_id">1</param>
         <param name="invert">false</param>
 
         <command_interface name="velocity"/>
