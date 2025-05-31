@@ -442,7 +442,7 @@ void ODriveHardwareInterface::set_axis_command_mode(const Axis& axis) {
     Set_Axis_State_msg_t state_msg;
 
     clear_error_msg.Identify = 0;
-    control_msg.Input_Mode = INPUT_MODE_PASSTHROUGH;
+    control_msg.Input_Mode = INPUT_MODE_VEL_RAMP;
     state_msg.Axis_Requested_State = AXIS_STATE_CLOSED_LOOP_CONTROL;
 
     if (axis.pos_input_enabled_) {
@@ -489,9 +489,10 @@ void Axis::on_can_msg(const rclcpp::Time&, const can_frame& frame) {
                     tempPosEst *= -1;
                     tempVelEst *= -1;
                 }
-
-                tempPosEst /= 16.23;
-                tempVelEst /= 16.23;
+                
+                // This is for the gearbox. We are using the Andymark EVO Slim gearbox with a 22.67:1 ratio
+                tempPosEst /= 22.67;
+                tempVelEst /= 22.67;
                 
                 pos_estimate_ = tempPosEst * (2 * M_PI);
                 vel_estimate_ = tempVelEst * (2 * M_PI);
