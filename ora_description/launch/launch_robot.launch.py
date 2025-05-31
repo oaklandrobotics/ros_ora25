@@ -108,6 +108,8 @@ def generate_launch_description():
       'camera_model': 'zed2i',
       'sim_mode': 'false',
       'use_sim_time': 'false',
+      'publish_tf': 'false',
+      'publish_map_tf': 'false'
     }.items()
   )
 
@@ -176,7 +178,7 @@ def generate_launch_description():
     
     # Start sensors
     delayed_lidar,
-    # zed_node,
+    zed_node,
     
     # Start ROS2 Control
     delayed_controller_manager,

@@ -5,8 +5,8 @@
   
   <!-- Make the camera -->
   <!-- Either using GNSS or not -->
-  <xacro:zed_camera name="$(arg camera_name)" model="$(arg camera_model)" enable_gnss="$(use_zed_localization)">
-    <xacro:if value="$(use_zed_localization)">
+  <xacro:zed_camera name="$(arg camera_name)" model="$(arg camera_model)" enable_gnss="$(arg use_zed_localization)">
+    <xacro:if value="$(arg use_zed_localization)">
       <gnss_origin xyz="0 0 0" rpy="0 0 0"/>
     </xacro:if>
   </xacro:zed_camera>

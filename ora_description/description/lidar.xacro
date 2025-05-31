@@ -50,8 +50,8 @@
             <resolution>1</resolution>
             
             <!-- +-180 degrees (Radians) -->
-            <min_angle>-3.14</min_angle>
-            <max_angle>3.14</max_angle>
+            <min_angle>-3.05</min_angle>
+            <max_angle>3.05</max_angle>
           </horizontal>
         </scan>
         <range>

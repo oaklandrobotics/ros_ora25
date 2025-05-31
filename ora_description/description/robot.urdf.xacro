@@ -26,7 +26,7 @@
 
   <!-- Sensors -->
   <xacro:include filename="lidar.xacro"/>
-  <!-- <xacro:include filename="camera.xacro"/> -->
+  <xacro:include filename="camera.xacro"/>
   <xacro:include filename="gps.xacro" />
   
 </robot>
