@@ -46,7 +46,11 @@ def generate_launch_description():
       'use_sim_time',
       default_value='false',
       description='Use sim time if true'),
-    
+    DeclareLaunchArgument(
+      'use_rviz',
+      default_value='true',
+      description='Show Rviz if true'
+    ),
     navigation2_cmd,
     rviz_cmd
   ])
