@@ -1,45 +1,63 @@
 import time
-import RPI.GPIO as GPIO
+import Jetson.GPIO as GPIO
 import rclpy
 from rclpy.node import Node
+from std_srvs.srv import Trigger
 
-class stacklight_service(Node):
-    def __init__(self):
-        super.init('led_service')
-        self.srv = self.create_service(bool, 'auto_light', self.toggle_flash)
-        self.flashing = False
-        self.rate
-        #NOTE: the physical pin on the Jetson that will be used is pin 12
-        self.output_pin = 18
-        self.flash_light()
-        self.curr = GPIO.high
-        GPIO.set_mode(GPIO.BCM)
-        GPIO.setup(self.output_pin, GPIO.OUT, initial = GPIO.HIGH)
+class StackLightService(Node):
+  def __init__(self):
+    super().__init__('led_service')
 
-    def toggle_flash(self, request, response):
-        self.flashing = not self.flashing
-        self.get_logger.info("Flashing toggled")
-        return self.flashing
-    
-    def flash_light(self):
-        while True:
-            if self.flashing:
-                try:
-                    while True:
-                        time.sleep(.5)
-                        GPIO.output(self.output_pin, curr)
-                        curr ^= GPIO.HIGH
-                finally:
-                    GPIO.cleanup()
+    self.flashing = False
+    timer_period = 3 # seconds
+
+    # GPIO
+    GPIO.setmode(GPIO.BOARD)
+    self.output_pin = 9
+    self.curr = GPIO.HIGH
+
+    GPIO.setup(self.output_pin, GPIO.OUT)
+
+    # Service toggles flash, timer actually flashes the light
+    self.light_srv = self.create_service(Trigger, 'auto_light', self.toggle_flash)
+    self.light_timer = self.create_timer(timer_period, self.flash_light)
+
+    # Log ¯\_(ツ)_/¯
+    self.get_logger().info(f'GPIO Pin {self.output_pin} set to output.')
+    self.get_logger().info(f'Stacklight Service Started.')
+
+  def toggle_flash(self, request, response):
+    self.flashing = not self.flashing
+    self.get_logger().info("Flashing toggled")
+
+    response.success = True
+    response.message = f"Flashing is now {'ON' if self.flashing else 'OFF'}"
+
+    return response
+
+  def flash_light(self):
+    if self.flashing:
+      try:
+        GPIO.output(self.output_pin, self.curr)
+        self.curr = GPIO.LOW if self.curr == GPIO.HIGH else GPIO.HIGH
+        
+        actual_state = GPIO.input(self.output_pin)
+        self.get_logger().info(f"Pin state (readback): {actual_state}")
+
+        
+        self.get_logger().info(f'Set light to {self.curr}')
+      except:
+        self.get_logger().info("Exception occurred ):")
 
 def main(args = None):
     rclpy.init(args = args)
 
-    stacklight_service = stacklight_service()
+    stacklight_node = StackLightService()
     
-    rclpy.spin(stacklight_service)
+    rclpy.spin(stacklight_node)
 
     rclpy.shutdown()
+    GPIO.cleanup()
 
 if __name__ == '__main__':
     main()

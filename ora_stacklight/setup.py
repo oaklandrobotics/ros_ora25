@@ -20,6 +20,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+            'stacklight_service = ora_stacklight.stacklight_service:main' 
         ],
     },
 )
