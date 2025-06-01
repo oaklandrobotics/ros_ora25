@@ -27,6 +27,7 @@ def generate_launch_description():
                 name="ekf_filter_node_odom",
                 output="screen",
                 parameters=[gps_ekf_params, {"use_sim_time": True}],
+                # published
                 remappings=[("odometry/filtered", "odometry/local")],
             ),
             launch_ros.actions.Node(
@@ -35,6 +36,7 @@ def generate_launch_description():
                 name="ekf_filter_node_map",
                 output="screen",
                 parameters=[gps_ekf_params, {"use_sim_time": True}],
+                # published
                 remappings=[("odometry/filtered", "odometry/global")],
             ),
             launch_ros.actions.Node(
@@ -44,11 +46,13 @@ def generate_launch_description():
                 output="screen",
                 parameters=[gps_ekf_params, {"use_sim_time": True}],
                 remappings=[
-                    ("imu/data", "demo/imu"),
-                    ("fix", "gps/fix"),
-                    ("gps/filtered", "gps/filtered"),
+                    #subscriptions
+                    ("imu/data", "/zed/zed_node/imu/data"), #IMU from ZED
+                    ("odometry/filtered", "odometry/global"), #subscribe to odometry/global from ekf_filter_node_map
+                    ("fix", "gps/fix"), #Ublox gps
+                    #published
                     ("odometry/gps", "odometry/gps"),
-                    ("odometry/filtered", "odometry/global"),
+                    ("gps/filtered", "gps/filtered"),
                 ],
             ),
         ]
