@@ -9,14 +9,14 @@ class StackLightService(Node):
     super().__init__('led_service')
 
     self.flashing = False
-    timer_period = 3 # seconds
+    timer_period = 0.5 # seconds
 
     # GPIO
     GPIO.setmode(GPIO.BOARD)
-    self.output_pin = 9
+    self.output_pin = 7
     self.curr = GPIO.HIGH
 
-    GPIO.setup(self.output_pin, GPIO.OUT)
+    GPIO.setup(self.output_pin, GPIO.OUT, initial=GPIO.LOW)
 
     # Service toggles flash, timer actually flashes the light
     self.light_srv = self.create_service(Trigger, 'auto_light', self.toggle_flash)
@@ -29,6 +29,9 @@ class StackLightService(Node):
   def toggle_flash(self, request, response):
     self.flashing = not self.flashing
     self.get_logger().info("Flashing toggled")
+
+    if not self.flashing:
+      GPIO.output(self.output_pin, GPIO.LOW)
 
     response.success = True
     response.message = f"Flashing is now {'ON' if self.flashing else 'OFF'}"
