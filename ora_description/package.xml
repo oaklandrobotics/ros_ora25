@@ -12,6 +12,14 @@
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
 
+  <depend>controller_manager</depend>
+  <depend>gazebo_ros_pkgs</depend>
+  <depend>turtlebot3_gazebo</depend>
+  <depend>xacro</depend>
+  <depend>robot_state_publisher</depend>
+  <depend>joint_state_publisher</depend>
+  <depend>joint_state_publisher_gui</depend>
+
   <export>
     <build_type>ament_cmake</build_type>
   </export>
