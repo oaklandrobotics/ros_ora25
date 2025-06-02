@@ -16,6 +16,6 @@
   <!-- '$(arg camera_name)_camera_link' is a child of 'base_link' -->
     <parent link="base_link"/>
     <child link="$(arg camera_name)_camera_link"/>
-    <origin xyz="${zed_x_offset} 0 ${zed_z_offset}" rpy="0 0 0" />
+    <origin xyz="${-zed_x_offset} 0 ${zed_z_offset}" rpy="0 ${20 * (pi / 180)} 0" />
   </joint>
 </robot>

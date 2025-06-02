@@ -6,7 +6,7 @@
   <joint name="laser_joint" type="fixed">
     <parent link="chassis_link"/>
     <child link="laser_frame"/>
-    <origin xyz="${lidar_x_offset} ${lidar_y_offset} ${lidar_z_offset}" rpy="0 0 0"/>
+    <origin xyz="${-lidar_x_offset} ${lidar_y_offset} ${lidar_z_offset}" rpy="0 0 ${pi}"/>
   </joint>
 
   <!-- Laser frame follows some  -->

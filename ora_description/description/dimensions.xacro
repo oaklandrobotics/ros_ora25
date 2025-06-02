@@ -54,7 +54,7 @@
   <xacro:arg name="camera_name"   default="zed" />
   <xacro:arg name="camera_model"  default="zed2i" />
   <xacro:arg name="use_zed_localization" default="true" />
-  <xacro:property name="zed_z_offset" value="${0.508}"/>
+  <xacro:property name="zed_z_offset" value="${0.508 + (8.75 * in_to_m)}"/>
   <xacro:property name="zed_y_offset" value="${0.0}"/>
   <xacro:property name="zed_x_offset" value="${8.5 * in_to_m}"/>
 
