@@ -1,4 +1,4 @@
-import rclpy, math, tf_transformations
+import rclpy, math
 from rclpy.node import Node
 
 from geometry_msgs.msg import PoseStamped
@@ -10,7 +10,7 @@ class GoalPublisher(Node):
         super().__init__('goal_publisher')
 
         self.ready = False
-        self.auton_sub = self.create_subscription(Bool, '/auton_mode', self.auton_callback)
+        self.auton_sub = self.create_subscription(Bool, '/auton_mode', self.auton_callback, 10)
 
         self.declare_parameter('goal_distance', 1.0)
         self.goal_distance = self.get_parameter('goal_distance').value
@@ -35,8 +35,9 @@ class GoalPublisher(Node):
         
         # Get yaw from quaternion
         orientation_q = self.current_pose.orientation
-        (_, _, yaw) = tf_transformations.euler_from_quaternion([
-            orientation_q.x, orientation_q.y, orientation_q.z, orientation_q.w])
+        yaw = math.atan2(2.0 * ( orientation_q.y * orientation_q.z + orientation_q.w * orientation_q.x), orientation_q.w * orientation_q.w - orientation_q.x * orientation_q.x - orientation_q.y * orientation_q.y + orientation_q.z * orientation_q.z)
+        """ (_, _, yaw) = tf_transformations.euler_from_quaternion([
+            orientation_q.x, orientation_q.y, orientation_q.z, orientation_q.w]) """
 
         # Compute goal pose ahead
         x_goal = self.current_pose.position.x + self.goal_distance * math.cos(yaw)
@@ -65,7 +66,7 @@ def main(args=None):
     node = GoalPublisher()
     while not node.ready:
         node.get_logger().info('Waiting for /auton_mode to become true...')
-        rclpy.spin_once(node, timeout_sec=0.1)
+        rclpy.spin_once(node, timeout_sec=1.0)
 
     rclpy.spin(node)
 

@@ -20,7 +20,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'stacklight_service = ora_auton.stacklight_service:main' 
+            'stacklight_service = ora_auton.stacklight_service:main',
+            'goal_publisher = ora_auton.goal_publisher:main'
         ],
     },
 )
