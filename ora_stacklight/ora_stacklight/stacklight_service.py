@@ -1,8 +1,8 @@
-import time
 import Jetson.GPIO as GPIO
 import rclpy
 from rclpy.node import Node
 from std_srvs.srv import Trigger
+from std_msgs.msg import Bool
 
 class StackLightService(Node):
   def __init__(self):
@@ -21,6 +21,10 @@ class StackLightService(Node):
     # Service toggles flash, timer actually flashes the light
     self.light_srv = self.create_service(Trigger, 'auto_light', self.toggle_flash)
     self.light_timer = self.create_timer(timer_period, self.flash_light)
+
+    # Publisher for auton_mode (If light is flashing, send True, otherwise false)
+    self.auton_state_pub = self.create_publisher(Bool, '/auton_mode', 10)
+    self.auton_state_timer = self.create_timer(1.0, self.auton_state_callback)
 
     # Log ¯\_(ツ)_/¯
     self.get_logger().info(f'GPIO Pin {self.output_pin} set to output.')
@@ -46,11 +50,15 @@ class StackLightService(Node):
         
         actual_state = GPIO.input(self.output_pin)
         self.get_logger().info(f"Pin state (readback): {actual_state}")
-
-        
         self.get_logger().info(f'Set light to {self.curr}')
-      except:
-        self.get_logger().info("Exception occurred ):")
+      except Exception as e:
+        self.get_logger().warn("Exception occurred ):")
+        self.get_logger().warn(e)
+
+  def auton_state_callback(self):
+    msg = Bool()
+    msg.data = self.flashing
+    self.auton_state_pub.publish(msg=msg)
 
 def main(args = None):
     rclpy.init(args = args)

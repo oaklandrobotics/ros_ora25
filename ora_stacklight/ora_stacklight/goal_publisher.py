@@ -3,10 +3,15 @@ from rclpy.node import Node
 
 from geometry_msgs.msg import PoseStamped
 from nav_msgs.msg import Odometry
+from std_msgs.msg import Bool
 
 class GoalPublisher(Node):
     def __init__(self):
         super().__init__('goal_publisher')
+
+        self.ready = False
+        self.auton_sub = self.create_subscription(Bool, '/auton_mode', self.auton_callback)
+
         self.declare_parameter('goal_distance', 1.0)
         self.goal_distance = self.get_parameter('goal_distance').value
 
@@ -22,6 +27,9 @@ class GoalPublisher(Node):
         self.current_pose = msg.pose.pose
 
     def publish_goal(self):
+        if self.ready is False:
+            return
+
         if self.current_pose is None:
             return
         
@@ -46,11 +54,20 @@ class GoalPublisher(Node):
 
         self.goal_pub.publish(goal)
 
+    def auton_callback(self, msg: Bool):
+        if msg.data:
+            self.get_logger().info('Received true from /auton_mode, starting')
+            self.ready = True
+
 def main(args=None):
     rclpy.init(args=args)
 
     node = GoalPublisher()
-    rclpy.spin()
+    while not node.ready:
+        node.get_logger().info('Waiting for /auton_mode to become true...')
+        rclpy.spin_once(node, timeout_sec=0.1)
+
+    rclpy.spin(node)
 
     node.destroy_node()
     rclpy.shutdown()
