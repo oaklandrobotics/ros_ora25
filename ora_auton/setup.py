@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-package_name = 'ora_stacklight'
+package_name = 'ora_auton'
 
 setup(
     name=package_name,
@@ -20,7 +20,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'stacklight_service = ora_stacklight.stacklight_service:main' 
+            'stacklight_service = ora_auton.stacklight_service:main' 
         ],
     },
 )
