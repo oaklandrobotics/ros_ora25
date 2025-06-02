@@ -6,14 +6,14 @@ ekf_filter_node_odom:
     base_link_frame: base_footprint
     world_frame: odom
 
-    odom0: /diff_drive_cont/odom
+    odom0: diff_drive_cont/odom
     odom0_config: [ false, false, false,
                   false, false, false,
                   true, true, true,
                   false, false, true,
                   false, false, false ]
 
-    imu0: /zed/zed_node/imu/data
+    imu0: zed/zed_node/imu/data
     imu0_config: [ false, false, false,
                   false, false, false,
                   false, false, false,

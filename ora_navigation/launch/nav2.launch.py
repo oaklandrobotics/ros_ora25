@@ -8,6 +8,7 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.actions import IncludeLaunchDescription, ExecuteProcess, TimerAction, DeclareLaunchArgument
 from launch.conditions import IfCondition
 from launch_ros.actions import Node
+from launch_ros.parameter_descriptions import ParameterValue
 
 from nav2_common.launch import RewrittenYaml
 
@@ -40,6 +41,21 @@ def generate_launch_description():
         ),
         condition=IfCondition(use_rviz),
     )
+  
+  scan_filter_node = Node(
+    package='laser_filters',
+    executable='scan_to_scan_filter_chain',
+    # name='scan_filter_node',
+    # output='screen',
+    parameters=[
+      os.path.join(pkg_share, 'config', 'laser_config.yaml'),
+      {"use_sim_time": use_sim_time}
+    ],
+    remappings=[
+      ('scan', '/scan'),
+      ('scan_filtered', '/scan_filtered')
+    ]
+  )
 
   return LaunchDescription([
     DeclareLaunchArgument(
@@ -48,10 +64,12 @@ def generate_launch_description():
       description='Use sim time if true'),
     DeclareLaunchArgument(
       'use_rviz',
-      default_value='true',
+      default_value='false',
       description='Show Rviz if true'
     ),
+    
     navigation2_cmd,
+    # scan_filter_node,
     rviz_cmd
   ])
 

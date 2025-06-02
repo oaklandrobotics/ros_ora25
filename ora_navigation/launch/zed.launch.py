@@ -12,7 +12,7 @@ def generate_launch_description():
         launch_arguments={
             'camera_model': 'zed2i',
             'ros_params_override_path': zed_params
-        }
+        }.items()
     )
 
     ld = launch.LaunchDescription()

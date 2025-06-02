@@ -13,6 +13,8 @@ from launch.event_handlers import OnProcessStart
 def generate_launch_description():
   # Include the robot_state_publisher launch file, provided by our own package. Force sim time to be enabled
   pkg_share = get_package_share_directory('ora_description')
+  auton_pkg_share = get_package_share_directory('ora_auton')
+  nav_pkg_share = get_package_share_directory('ora_navigation')
   lidar_pkg_share = get_package_share_directory('sllidar_ros2')
   zed_pkg_share = get_package_share_directory('zed_wrapper')
 
@@ -31,9 +33,41 @@ def generate_launch_description():
     }.items()
   )
 
+  twist_mux = IncludeLaunchDescription(
+    PythonLaunchDescriptionSource([
+      os.path.join(
+        nav_pkg_share,'launch','twist_mux.launch.py'
+      )
+    ]),
+    launch_arguments={'use_sim_time': 'false'}.items()
+  )
+
+  nav2 = IncludeLaunchDescription(
+    PythonLaunchDescriptionSource([
+      os.path.join(
+        nav_pkg_share,'launch','nav2.launch.py'
+      )
+    ])
+  )
+
   robot_description = Command(['ros2 ', 'param ', 'get ', '--hide-type ', '/robot_state_publisher ', 'robot_description'])
   
   controller_params_file = os.path.join(pkg_share, 'config', 'my_controllers.yaml')
+
+  goal_publisher_node = Node(
+      package='ora_auton',
+      executable='goal_publisher',
+  )
+  
+  stacklight_service_node = Node(
+    package='ora_auton',
+    executable='stacklight_service'
+  )
+  
+  line_percep_node = Node(
+    package='line_perception',
+    executable='line_perception'
+  )
 
   ##############################################
   #                                            #
@@ -98,20 +132,53 @@ def generate_launch_description():
   # custom_baseline = LaunchConfiguration('custom_baseline')
   # enable_gnss = LaunchConfiguration('enable_gnss')
   # gnss_antenna_offset = LaunchConfiguration('gnss_antenna_offset')
-  zed_node = IncludeLaunchDescription(
+  # zed_node = IncludeLaunchDescription(
+  #   PythonLaunchDescriptionSource([
+  #     os.path.join(
+  #       zed_pkg_share, 'launch', 'zed_camera.launch.py'
+  #     )
+  #   ]),
+  #   launch_arguments={
+  #     'camera_model': 'zed2i',
+  #     'sim_mode': 'false',
+  #     'use_sim_time': 'false',
+  #     'publish_tf': 'false',
+  #     'publish_map_tf': 'false'
+  #   }.items()
+  # )
+  custom_zed_node = IncludeLaunchDescription(
     PythonLaunchDescriptionSource([
       os.path.join(
-        zed_pkg_share, 'launch', 'zed_camera.launch.py'
+        nav_pkg_share, 'launch', 'zed.launch.py'
       )
     ]),
     launch_arguments={
-      'camera_model': 'zed2i',
-      'sim_mode': 'false',
-      'use_sim_time': 'false',
-      'publish_tf': 'false',
-      'publish_map_tf': 'false'
-    }.items()
+       'camera_model': 'zed2i',
+       'sim_mode': 'false',
+       'use_sim_time': 'false',
+       'publish_tf': 'false',
+       'publish_map_tf': 'false'
+     }.items()
   )
+  
+  # GPS
+  ublox_node = IncludeLaunchDescription(
+    PythonLaunchDescriptionSource([
+      os.path.join(
+        nav_pkg_share, 'launch', 'ublox.launch.py'
+      )
+    ]),
+  )
+
+  # EKF
+  dual_ekf_node = IncludeLaunchDescription(
+    PythonLaunchDescriptionSource([
+      os.path.join(
+        nav_pkg_share, 'launch', 'dual_ekf_navsat.launch.py'
+      )
+    ]),
+  )
+
 
   ##############################################
   #                                            #
@@ -178,10 +245,20 @@ def generate_launch_description():
     
     # Start sensors
     delayed_lidar,
-    zed_node,
+    custom_zed_node,
+    ublox_node,
+    dual_ekf_node,
     
     # Start ROS2 Control
     delayed_controller_manager,
     delayed_diff_drive,
-    delayed_joint_broadcaster
+    delayed_joint_broadcaster,
+    twist_mux,
+    
+    # Start auton stuff
+    goal_publisher_node,
+    stacklight_service_node,
+    line_percep_node,
+    
+    nav2,
   ])

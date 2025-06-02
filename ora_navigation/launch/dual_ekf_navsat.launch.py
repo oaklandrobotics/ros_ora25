@@ -26,7 +26,7 @@ def generate_launch_description():
                 executable="ekf_node",
                 name="ekf_filter_node_odom",
                 output="screen",
-                parameters=[gps_ekf_params, {"use_sim_time": True}],
+                parameters=[gps_ekf_params, {"use_sim_time": False}],
                 # published
                 remappings=[("odometry/filtered", "odometry/local")],
             ),
@@ -35,7 +35,7 @@ def generate_launch_description():
                 executable="ekf_node",
                 name="ekf_filter_node_map",
                 output="screen",
-                parameters=[gps_ekf_params, {"use_sim_time": True}],
+                parameters=[gps_ekf_params, {"use_sim_time": False}],
                 # published
                 remappings=[("odometry/filtered", "odometry/global")],
             ),
@@ -44,16 +44,17 @@ def generate_launch_description():
                 executable="navsat_transform_node",
                 name="navsat_transform",
                 output="screen",
-                parameters=[gps_ekf_params, {"use_sim_time": True}],
+                parameters=[gps_ekf_params, {"use_sim_time": False}],
                 remappings=[
-                    #subscriptions
-                    ("imu/data", "/zed/zed_node/imu/data"), #IMU from ZED
+                    # Subscriptions
                     ("odometry/filtered", "odometry/global"), #subscribe to odometry/global from ekf_filter_node_map
-                    ("fix", "gps/fix"), #Ublox gps
-                    #published
+                    ("imu/data", "zed/zed_node/imu/data"), #IMU from ZED
+                    ("gps/fix", "fix"), # Ublox gps
+                    
+                    # Published
                     ("odometry/gps", "odometry/gps"),
                     ("gps/filtered", "gps/filtered"),
                 ],
-            ),
+            )
         ]
     )

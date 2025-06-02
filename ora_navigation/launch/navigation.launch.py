@@ -15,15 +15,6 @@ def generate_launch_description():
   
   use_sim_time = LaunchConfiguration('use_sim_time')
 
-  twist_mux = IncludeLaunchDescription(
-    PythonLaunchDescriptionSource([
-      os.path.join(
-        pkg_share,'launch','twist_mux.launch.py'
-      )
-    ]),
-    launch_arguments={'use_sim_time': 'false'}.items()
-  )
-  
   teleop = IncludeLaunchDescription(
     PythonLaunchDescriptionSource([
       os.path.join(
@@ -32,25 +23,25 @@ def generate_launch_description():
     ])
   )
   
-  slam_toolbox = IncludeLaunchDescription(
-    PythonLaunchDescriptionSource([
-      os.path.join(
-        slam_toolbox_pkg_share,'launch','slam_toolbox.launch.py'
-      )
-    ]),
-    launch_arguments={'use_sim_time': 'false'}.items()
-  )
+  # slam_toolbox = IncludeLaunchDescription(
+  #   PythonLaunchDescriptionSource([
+  #     os.path.join(
+  #       slam_toolbox_pkg_share,'launch','slam_toolbox.launch.py'
+  #     )
+  #   ]),
+  #   launch_arguments={'use_sim_time': 'false'}.items()
+  # )
   
-  robot_localization_node = Node(
-    package='robot_localization',
-    executable='ekf_node',
-    name='ekf_node',
-    output='screen',
-    parameters=[
-      os.path.join(pkg_share, 'config/real_ekf.yaml'),
-      {'use_sim_time': LaunchConfiguration('use_sim_time')}
-    ]
-  )
+  # robot_localization_node = Node(
+  #   package='robot_localization',
+  #   executable='ekf_node',
+  #   name='ekf_node',
+  #   output='screen',
+  #   parameters=[
+  #     os.path.join(pkg_share, 'config/real_ekf.yaml'),
+  #     {'use_sim_time': LaunchConfiguration('use_sim_time')}
+  #   ]
+  # )
 
   return LaunchDescription([
     DeclareLaunchArgument(
@@ -58,9 +49,9 @@ def generate_launch_description():
       default_value='false',
       description='Use sim time if true'),
     
-    twist_mux,
+    # twist_mux,
     teleop,
-    slam_toolbox,
+    # slam_toolbox,
     # robot_localization_node
   ])
 

@@ -52,7 +52,7 @@ controller_server:
 
     # Progress checker parameters
     progress_checker:
-      plugin: "nav2_controller/SimpleProgressChecker"
+      plugin: "nav2_controller::SimpleProgressChecker"
       required_movement_radius: 0.5
       movement_time_allowance: 10.0
     # Goal checker parameters
@@ -63,11 +63,11 @@ controller_server:
     #  stateful: True
     general_goal_checker:
       stateful: True
-      plugin: "nav2_controller/SimpleGoalChecker"
+      plugin: "nav2_controller::SimpleGoalChecker"
       xy_goal_tolerance: 0.25
       yaw_goal_tolerance: 0.25
     FollowPath:
-      plugin: "dwb_core/DWBLocalPlanner"
+      plugin: "dwb_core::DWBLocalPlanner"
       debug_trajectory_details: True
       min_vel_x: 0.0
       min_vel_y: 0.0
@@ -123,7 +123,7 @@ local_costmap:
       plugins: [ "voxel_layer", "obstacle_layer", "denoise_layer", "inflation_layer" ]
       # Local, use zed (pointcloud and lines) and lidar
       voxel_layer:
-        plugin: "nav2_costmap_2d/VoxelLayer"
+        plugin: "nav2_costmap_2d::VoxelLayer"
         enabled: True
         publish_voxel_map: True
         origin_z: 0.0
@@ -133,14 +133,14 @@ local_costmap:
         mark_threshold: 0
         observation_sources: pointcloud lines
         pointcloud:
-          topic: /zed/depth_points #TODO set the right topic
+          topic: /zed/zed_node/point_cloud/cloud_registered #TODO set the right topic
           data_type: "PointCloud2"
           marking: True
           clearing: True
           max_obstacle_height: 2.0
-          raytrace_max_range: 5.0
+          raytrace_max_range: 10.0
           raytrace_min_range: 0.05
-          obstacle_max_range: 5.0
+          obstacle_max_range: 10.0
           obstacle_min_range: 0.05
         lines:
           topic: /lines
@@ -149,12 +149,12 @@ local_costmap:
           clearing: True
           max_obstacle_height: 1.0
           min_obstacle_height: -1.0
-          raytrace_max_range: 5.0
+          raytrace_max_range: 10.0
           raytrace_min_range: 0.05
-          obstacle_max_range: 5.0
+          obstacle_max_range: 10.0
           obstacle_min_range: 0.05
       obstacle_layer:
-        plugin: "nav2_costmap_2d/ObstacleLayer"
+        plugin: "nav2_costmap_2d::ObstacleLayer"
         enabled: True
         observation_sources: scan
         scan:
@@ -169,15 +169,15 @@ local_costmap:
           clearing: True
           marking: True
           data_type: "LaserScan"
-          raytrace_max_range: 3.0
-          raytrace_min_range: 0.5
-          obstacle_max_range: 2.5
-          obstacle_min_range: 0.5
+          raytrace_max_range: 10.5
+          raytrace_min_range: 0.8
+          obstacle_max_range: 10.0
+          obstacle_min_range: 0.8
       denoise_layer:
-        plugin: "nav2_costmap_2d/DenoiseLayer"
+        plugin: "nav2_costmap_2d::DenoiseLayer"
         enabled: True
       inflation_layer:
-        plugin: "nav2_costmap_2d/InflationLayer"
+        plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 3.0 #TODO make sure scaling factor & radius are good
         inflation_radius: 0.55
       # no static layer for GPS navigation
@@ -201,7 +201,7 @@ global_costmap:
       track_unknown_space: true
       plugins: [ "obstacle_layer", "denoise_layer", "inflation_layer" ]
       obstacle_layer:
-        plugin: "nav2_costmap_2d/ObstacleLayer"
+        plugin: "nav2_costmap_2d::ObstacleLayer"
         enabled: True
         observation_sources: scan
         scan:
@@ -216,16 +216,16 @@ global_costmap:
           clearing: True
           marking: True
           data_type: "LaserScan"
-          raytrace_max_range: 8.5
-          raytrace_min_range: 0.5
-          obstacle_max_range: 8.0
-          obstacle_min_range: 0.5
+          raytrace_max_range: 10.5
+          raytrace_min_range: 0.8
+          obstacle_max_range: 10.0
+          obstacle_min_range: 0.8
           inf_is_valid: true
       denoise_layer:
-        plugin: "nav2_costmap_2d/DenoiseLayer"
+        plugin: "nav2_costmap_2d::DenoiseLayer"
         enabled: True
       inflation_layer:
-        plugin: "nav2_costmap_2d/InflationLayer"
+        plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 3.0 #TODO make sure scaling factor & radius are good
         inflation_radius: 0.55
       #static_layer:
@@ -262,7 +262,7 @@ smoother_server:
   ros__parameters:
     smoother_plugins: [ "simple_smoother" ]
     simple_smoother:
-      plugin: "nav2_smoother/SimpleSmoother"
+      plugin: "nav2_smoother::SimpleSmoother"
       tolerance: 1e-10
       max_its: 1000
       do_refinement: True
@@ -302,7 +302,7 @@ waypoint_follower:
     action_server_result_timeout: 900.0
     waypoint_task_executor_plugin: "wait_at_waypoint"
     wait_at_waypoint:
-      plugin: "nav2_waypoint_follower/WaitAtWaypoint"
+      plugin: "nav2_waypoint_follower::WaitAtWaypoint"
       enabled: True
       waypoint_pause_duration: 200
 
