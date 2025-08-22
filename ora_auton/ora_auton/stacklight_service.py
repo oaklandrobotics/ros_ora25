@@ -27,8 +27,8 @@ class StackLightService(Node):
     self.auton_state_timer = self.create_timer(1.0, self.auton_state_callback)
 
     # Log ¯\_(ツ)_/¯
-    self.get_logger().info(f'GPIO Pin {self.output_pin} set to output.')
-    self.get_logger().info(f'Stacklight Service Started.')
+    # self.get_logger().info(f'GPIO Pin {self.output_pin} set to output.')
+    # self.get_logger().info(f'Stacklight Service Started.')
 
   def toggle_flash(self, request, response):
     self.flashing = not self.flashing
