@@ -41,21 +41,6 @@ def generate_launch_description():
         ),
         condition=IfCondition(use_rviz),
     )
-  
-  scan_filter_node = Node(
-    package='laser_filters',
-    executable='scan_to_scan_filter_chain',
-    # name='scan_filter_node',
-    # output='screen',
-    parameters=[
-      os.path.join(pkg_share, 'config', 'laser_config.yaml'),
-      {"use_sim_time": use_sim_time}
-    ],
-    remappings=[
-      ('scan', '/scan'),
-      ('scan_filtered', '/scan_filtered')
-    ]
-  )
 
   return LaunchDescription([
     DeclareLaunchArgument(
@@ -69,7 +54,6 @@ def generate_launch_description():
     ),
     
     navigation2_cmd,
-    # scan_filter_node,
     rviz_cmd
   ])
 

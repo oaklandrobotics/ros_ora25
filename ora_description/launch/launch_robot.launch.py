@@ -106,6 +106,19 @@ def generate_launch_description():
     actions=[rplidar_node]
   )
 
+  filtered_laser_node = IncludeLaunchDescription(
+    PythonLaunchDescriptionSource([
+      os.path.join(
+        nav_pkg_share, 'launch', 'filtered_laser.launch.py'
+      )
+    ])
+  )
+
+  delayed_filter_laser = TimerAction(
+    period=5.0,
+    actions=[filtered_laser_node]
+  )
+
   # Zed
   # Default params per the launch file
   # svo_path = LaunchConfiguration('svo_path')
@@ -237,7 +250,7 @@ def generate_launch_description():
     # Launch Parameters
     DeclareLaunchArgument(
       'lidar_serial_port',
-      default_value='/dev/ttyUSB0',
+      default_value='/dev/rplidar',
       description='Serial port that Lidar is connected to'),
     
     # Start robot state publisher
@@ -245,6 +258,7 @@ def generate_launch_description():
     
     # Start sensors
     delayed_lidar,
+    delayed_filter_laser,
     custom_zed_node,
     ublox_node,
     dual_ekf_node,
@@ -256,7 +270,7 @@ def generate_launch_description():
     twist_mux,
     
     # Start auton stuff
-    goal_publisher_node,
+    #goal_publisher_node,
     stacklight_service_node,
     line_percep_node,
     
