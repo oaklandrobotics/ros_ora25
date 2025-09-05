@@ -119,7 +119,7 @@ local_costmap:
       width: 3
       height: 3
       resolution: 0.05
-      footprint: "[ [0.21, 0.195], [0.21, -0.195], [-0.21, -0.195], [-0.21, 0.195] ]" #TODO make the dim correct
+      footprint: "[ [0.0, 0.254], [0.0, -0.254], [-0.914, -0.254], [-0.914, 0.254] ]"
       plugins: [ "voxel_layer", "obstacle_layer", "denoise_layer", "inflation_layer" ]
       # Local, use zed (pointcloud and lines) and lidar
       voxel_layer:

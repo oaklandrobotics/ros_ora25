@@ -23,6 +23,8 @@ diff_drive_cont:
 
     use_stamped_vel: false
 
+    enable_odom_tf: false
+
     # open_loop: false    
 
     # wheels_per_side: x
