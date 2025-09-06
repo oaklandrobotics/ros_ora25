@@ -114,12 +114,12 @@ local_costmap:
       update_frequency: 5.0
       publish_frequency: 2.0
       global_frame: odom
-      robot_base_frame: base_footprint #TODO is this supposed to be base_link or?
+      robot_base_frame: base_link #TODO is this supposed to be base_link or?
       rolling_window: true
       width: 3
       height: 3
       resolution: 0.05
-      footprint: "[ [0.0, 0.254], [0.0, -0.254], [-0.914, -0.254], [-0.914, 0.254] ]"
+      footprint: "[ [0.0, 0.195], [0.0, -0.195], [-0.21, -0.195], [-0.21, 0.195] ]" #TODO make the dim correct
       plugins: [ "voxel_layer", "obstacle_layer", "denoise_layer", "inflation_layer" ]
       # Local, use zed (pointcloud and lines) and lidar
       voxel_layer:
@@ -164,7 +164,7 @@ local_costmap:
           #   * User chosen topic is `scan`.
           #   * Topic will be remapped to `/tb4/scan` without `local_costmap`.
           #   * Use global topic `/scan` if you do not wish the node namespace to apply
-          topic: /scan
+          topic: /scan_filtered
           max_obstacle_height: 2.0
           clearing: True
           marking: True
@@ -211,7 +211,7 @@ global_costmap:
           #   * User chosen topic is `scan`.
           #   * Topic will be remapped to `/tb4/scan` without `global_costmap`.
           #   * Use global topic `/scan` if you do not wish the node namespace to apply
-          topic: scan
+          topic: scan_filtered
           max_obstacle_height: 2.0
           clearing: True
           marking: True
@@ -348,7 +348,7 @@ collision_monitor:
     observation_sources: [ "scan" ]
     scan:
       type: "scan"
-      topic: "scan"
+      topic: "scan_filtered"
       min_height: 0.15
       max_height: 2.0
       enabled: True
