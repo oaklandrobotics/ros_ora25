@@ -27,8 +27,8 @@ class StackLightService(Node):
     self.auton_state_timer = self.create_timer(1.0, self.auton_state_callback)
 
     # Log ¯\_(ツ)_/¯
-    self.get_logger().info(f'GPIO Pin {self.output_pin} set to output.')
-    self.get_logger().info(f'Stacklight Service Started.')
+    # self.get_logger().info(f'GPIO Pin {self.output_pin} set to output.')
+    # self.get_logger().info(f'Stacklight Service Started.')
 
   def toggle_flash(self, request, response):
     self.flashing = not self.flashing
@@ -47,10 +47,6 @@ class StackLightService(Node):
       try:
         GPIO.output(self.output_pin, self.curr)
         self.curr = GPIO.LOW if self.curr == GPIO.HIGH else GPIO.HIGH
-        
-        actual_state = GPIO.input(self.output_pin)
-        self.get_logger().info(f"Pin state (readback): {actual_state}")
-        self.get_logger().info(f'Set light to {self.curr}')
       except Exception as e:
         self.get_logger().warn("Exception occurred ):")
         self.get_logger().warn(e)

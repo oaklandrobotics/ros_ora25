@@ -21,6 +21,7 @@ def generate_launch_description():
             launch.actions.DeclareLaunchArgument(
                 "output_location", default_value="~/dual_ekf_navsat_example_debug.txt"
             ),
+            
             launch_ros.actions.Node(
                 package="robot_localization",
                 executable="ekf_node",
@@ -30,6 +31,7 @@ def generate_launch_description():
                 # published
                 remappings=[("odometry/filtered", "odometry/local")],
             ),
+            
             launch_ros.actions.Node(
                 package="robot_localization",
                 executable="ekf_node",
@@ -39,6 +41,7 @@ def generate_launch_description():
                 # published
                 remappings=[("odometry/filtered", "odometry/global")],
             ),
+            
             launch_ros.actions.Node(
                 package="robot_localization",
                 executable="navsat_transform_node",

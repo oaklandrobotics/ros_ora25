@@ -8,6 +8,7 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.actions import IncludeLaunchDescription, ExecuteProcess, TimerAction, DeclareLaunchArgument
 from launch.conditions import IfCondition
 from launch_ros.actions import Node
+from launch_ros.parameter_descriptions import ParameterValue
 
 from nav2_common.launch import RewrittenYaml
 
@@ -48,9 +49,10 @@ def generate_launch_description():
       description='Use sim time if true'),
     DeclareLaunchArgument(
       'use_rviz',
-      default_value='true',
+      default_value='false',
       description='Show Rviz if true'
     ),
+    
     navigation2_cmd,
     rviz_cmd
   ])
